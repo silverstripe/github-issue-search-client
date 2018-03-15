@@ -24,7 +24,7 @@
         <!-- Result -->
         <div v-else-if="data" class="result apollo">
           <ul>
-            <li v-for="issue in data.search.nodes">
+            <li v-bind:key="issue.id" v-for="issue in data.search.nodes">
               {{ issue.title }}
             </li>
           </ul>
