@@ -1,0 +1,20 @@
+query($query:String!) {
+  search(query:$query, type:ISSUE, first:10) {
+    nodes {
+      ...on Issue {
+        id,
+        title,
+        url,
+        state,
+        createdAt
+        labels(first:10) {
+          nodes {
+            id,
+            name,
+            color
+          }
+        }
+      }
+    }
+  }
+}
