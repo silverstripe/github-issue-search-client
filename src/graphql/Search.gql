@@ -6,7 +6,12 @@ query($query:String!) {
         title,
         url,
         state,
-        createdAt
+        createdAt,
+        repository {
+          id,
+          name,
+          url
+        },
         labels(first:10) {
           nodes {
             id,
