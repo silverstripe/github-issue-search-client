@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    <div class="logo">
+      <img src="logo.png" class="logo--img" alt="Elvis Bug Tracker" />
+    </div>
     <SearchResults/>
   </div>
 </template>
@@ -23,5 +26,17 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.logo {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+.logo--img {
+    width: 112px;
+    height: 101px;
 }
 </style>
