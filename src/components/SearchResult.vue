@@ -12,6 +12,7 @@
       <a :href="issueData.repository.url" class="result__repository" target="_blank">{{ issueData.repository.name }}</a>
       <span class="result__created">{{ createdNice }}</span>
       <div class="result__labels">
+        <span class="result__labels-title">Labels: </span>
         <span
           v-for="label in issueData.labels.nodes"
           :key="label.id"
@@ -162,12 +163,20 @@
     font-size: 14px;
   }
 
-  .result__label {
-    border-style: solid;
-    border-width: 1px;
+  .result__labels-title {
     display: inline-block;
-    font-weight: 700;
+    font-size: 15px;
+    margin-right: 5px;
+  }
+
+  .result__label {
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 2px;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 400;
     margin: 5px;
-    padding: 5px 10px;
+    padding: 3px 5px;
   }
 </style>

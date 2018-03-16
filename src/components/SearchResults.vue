@@ -124,7 +124,6 @@ export default {
   .form,
   .input,
   .submit,
-  .apollo,
   .message {
     padding: 12px;
   }
@@ -134,6 +133,7 @@ export default {
     color: #8F9FBA;
     background-color: #eef0f4;
     border-radius: 6px 6px 0 0;
+    margin-bottom: 40px;
     padding: 18px 20px 0 20px;
   }
 
