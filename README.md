@@ -5,6 +5,8 @@
 This app uses [vue-cli](https://github.com/vuejs/vue-cli/blob/dev/docs/cli.md)
 to simplify local development and production buidls for VueJS.
 
+![Preview](_img/preview.png)
+
 ## Install
 
 ```
