@@ -1,9 +1,11 @@
 <template>
   <div id="app">
-    <div class="logo">
-      <img src="logo.png" class="logo--img" alt="Elvis Bug Tracker" />
+    <div class="container">
+      <div class="logo">
+        <img src="logo.png" class="logo--img" alt="Elvis Bug Tracker" />
+      </div>
+      <SearchResults/>
     </div>
-    <SearchResults/>
   </div>
 </template>
 
