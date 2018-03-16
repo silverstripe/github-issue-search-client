@@ -38,8 +38,9 @@
         <div v-else-if="error" class="error apollo">An error occured</div>
 
         <!-- Result -->
-        <div v-else-if="data" class="result apollo">
-          <ul>
+        <div v-else-if="data" class="results apollo">
+          <h3 class="results__title">Search results</h3>
+          <ul class="results__list">
             <SearchResult v-for="issue in data.search.nodes" :key="issue.id" :issue-data="issue" />
           </ul>
         </div>
@@ -71,17 +72,20 @@ export default {
   computed: {
     modeQuery() {
       let query = "";
+
       if (this.mode === "ALL") {
-        return "";
+        query = "";
       } else if (this.mode === "UX") {
-        return "label:type/ux";
+        query = "label:type/ux";
       } else if (this.mode === "RFC") {
-        return "RFC"; // search term
+        query = "RFC"; // search term
       } else {
-        throw `Unknown mode: ${this.mode}`;
+        query = `Unknown mode: ${this.mode}`;
       }
+
       return query;
     },
+
     compositeQuery() {
       return `
           ${this.submitQuery}
@@ -120,7 +124,6 @@ export default {
   .form,
   .input,
   .submit,
-  .apollo,
   .message {
     padding: 12px;
   }
@@ -130,6 +133,7 @@ export default {
     color: #8F9FBA;
     background-color: #eef0f4;
     border-radius: 6px 6px 0 0;
+    margin-bottom: 40px;
     padding: 18px 20px 0 20px;
   }
 
@@ -187,5 +191,19 @@ export default {
 
   .error {
     color: red;
+  }
+
+  .results__title {
+    border-bottom: 1px solid #E1E5ED;
+    color: #43536D;
+    font-size: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+  }
+
+  .results__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 </style>
