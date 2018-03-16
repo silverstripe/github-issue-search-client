@@ -27,70 +27,68 @@
 </template>
 
 <script>
-  /**
-   * Data mockup:
-   *
-   * createdAt: "2018-03-15T14:08:41Z",
-   * id: "MDU6SXNzdWUzMDU1NjczNzU=",
-   * labels: {
-   *   nodes: [
-   *     0: {id: "MDU6TGFiZWwzODYzMTYwNDE=", name: "affects/v4", color: "5319e7", __typename: "Label"},
-   *     ...
-   *   ],
-   *   __typename: "LabelConnection"
-   * },
-   * state: "OPEN",
-   * title: "[Recoverable Error] Argument 1 passed to SilverStripe\Config\MergeStrategy\Priority::mergeArray() must be of the type array",
-   * url: "https://github.com/silverstripe/silverstripe-framework/issues/7938"
-   */
-  export default {
-    props: {
-      issueData: {
-        type: Object,
-      },
+/**
+ * Data mockup:
+ *
+ * createdAt: "2018-03-15T14:08:41Z",
+ * id: "MDU6SXNzdWUzMDU1NjczNzU=",
+ * labels: {
+ *   nodes: [
+ *     0: {id: "MDU6TGFiZWwzODYzMTYwNDE=", name: "affects/v4", color: "5319e7", __typename: "Label"},
+ *     ...
+ *   ],
+ *   __typename: "LabelConnection"
+ * },
+ * state: "OPEN",
+ * title: "[Recoverable Error] Argument 1 passed to SilverStripe\Config\MergeStrategy\Priority::mergeArray() must be of the type array",
+ * url: "https://github.com/silverstripe/silverstripe-framework/issues/7938"
+ */
+export default {
+  props: {
+    issueData: {
+      type: Object
+    }
+  },
+
+  data() {
+    return {};
+  },
+
+  computed: {
+    /**
+     * Helper to capitalize first letter of status and lowercase the rest.
+     *
+     * @return {String}
+     */
+    status() {
+      const state = this.issueData.state;
+
+      return state.charAt(0) + state.slice(1).toLowerCase();
     },
 
-    data() {
-      return {};
+    /**
+     * Helper to lowercase the state of the issue.
+     *
+     * @return {String}
+     */
+    statusLower() {
+      return this.issueData.state.toLowerCase();
     },
 
-    computed: {
-      /**
-       * Helper to capitalize first letter of status and lowercase the rest.
-       *
-       * @return {String}
-       */
-      status() {
-        const state = this.issueData.state;
+    /**
+     * Helper to format the ISO date to a nicer format.
+     *
+     * @return {String}
+     */
+    createdNice() {
+      const date = new Date(this.issueData.createdAt);
 
-        return state.charAt(0) + state.slice(1).toLowerCase();
-      },
+      return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    }
+  },
 
-      /**
-       * Helper to lowercase the state of the issue.
-       *
-       * @return {String}
-       */
-      statusLower() {
-        return this.issueData.state.toLowerCase();
-      },
-
-      /**
-       * Helper to format the ISO date to a nicer format.
-       *
-       * @return {String}
-       */
-      createdNice() {
-        const date = new Date(this.issueData.createdAt);
-
-        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-      }
-    },
-
-    methods: {
-
-    },
-  }
+  methods: {}
+};
 </script>
 
 <style scoped>
@@ -149,7 +147,6 @@
     display: inline-block;
     font-size: 15px;
     margin-bottom: 20px;
-    margin-left: 10px;
     margin-right: 10px;
     text-decoration: none;
   }
