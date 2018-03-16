@@ -2,11 +2,14 @@
   <div class="apollo-example">
     <!-- Cute tiny form -->
     <div class="form">
-      <input
-        v-model="query"
-        placeholder="Search for issues"
-        class="input"
-      >
+      <form>
+        <input
+          v-model="query"
+          placeholder="Search for issues"
+          class="input"
+        >
+        <input type="submit" @click.prevent="onClick" />
+      </form>
     </div>
 
     <!-- Apollo watched Graphql query -->
@@ -42,7 +45,8 @@
   export default {
     data() {
       return {
-        query: ""
+        query: "",
+        submitQuery: "",
       };
     },
 
@@ -53,7 +57,7 @@
     computed: {
       compositeQuery() {
         return `
-          ${this.query}
+          ${this.submitQuery}
           is:open
           is:issue
           repo:silverstripe/silverstripe-framework repo:silverstripe/silverstripe-cms repo:silverstripe/silverstripe-admin repo:silverstripe/silverstripe-installer repo:silverstripe/silverstripe-asset-admin repo:silverstripe/silverstripe-versioned repo:silverstripe/silverstripe-reports repo:silverstripe/silverstripe-siteconfig repo:silverstripe/silverstripe-assets repo:silverstripe/silverstripe-campaign-admin repo:silverstripe/silverstripe-errorpage repo:silverstripe/silverstripe-graphql repo:silverstripe/recipe-core repo:silverstripe/recipe-plugin repo:silverstripe/recipe-cms
@@ -61,7 +65,17 @@
       }
     },
 
-    methods: {}
+    methods: {
+      /**
+       * Form submission handler that will update the `submitQuery` state that
+       * the `<ApolloQuery>` component is watching to make the API requests.
+       *
+       * @return {void}
+       */
+      onClick() {
+        this.submitQuery = this.query;
+      }
+    }
   };
 </script>
 
