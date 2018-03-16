@@ -3,12 +3,25 @@
     <!-- Cute tiny form -->
     <div class="form">
       <form>
-        <input
-          v-model="query"
-          placeholder="Search for issues"
-          class="input"
-        >
-        <input type="submit" @click.prevent="onClick" />
+        <div class="searchbar">
+          <input
+            v-model="query"
+            placeholder="Search for issue"
+            class="input input__query"
+          >
+          <input type="submit" class="submit" @click.prevent="onClick" value="Search" />
+        </div>
+        <ul class="tabs">
+          <li v-bind:class="{'tab': true, 'tab__active':(mode == 'ALL')}">
+            <a class="tab--title" href="#" @click="setMode('ALL')">All Issues</a>
+          </li>
+          <li v-bind:class="{'tab': true, 'tab__active':(mode == 'UX')}">
+            <a class="tab--title" href="#" @click="setMode('UX')">UX Issues</a>
+          </li>
+          <li v-bind:class="{'tab': true, 'tab__active':(mode == 'RFC')}">
+            <a class="tab--title" href="#" @click="setMode('RFC')">RFCs</a>
+          </li>
+        </ul>
       </form>
     </div>
 
@@ -40,58 +53,136 @@
 </template>
 
 <script>
-  import SearchResult from './SearchResult';
+import SearchResult from "./SearchResult";
 
-  export default {
-    data() {
-      return {
-        query: "",
-        submitQuery: "",
-      };
+export default {
+  data() {
+    return {
+      query: "",
+      submitQuery: "",
+      mode: "ALL"
+    };
+  },
+
+  components: {
+    SearchResult
+  },
+
+  computed: {
+    modeQuery() {
+      let query = "";
+      if (this.mode === "ALL") {
+        return "";
+      } else if (this.mode === "UX") {
+        return "label:type/ux";
+      } else if (this.mode === "RFC") {
+        return "RFC"; // search term
+      } else {
+        throw `Unknown mode: ${this.mode}`;
+      }
+      return query;
     },
-
-    components: {
-      SearchResult,
-    },
-
-    computed: {
-      compositeQuery() {
-        return `
+    compositeQuery() {
+      return `
           ${this.submitQuery}
+          ${this.modeQuery}
           is:open
           is:issue
           repo:silverstripe/silverstripe-framework repo:silverstripe/silverstripe-cms repo:silverstripe/silverstripe-admin repo:silverstripe/silverstripe-installer repo:silverstripe/silverstripe-asset-admin repo:silverstripe/silverstripe-versioned repo:silverstripe/silverstripe-reports repo:silverstripe/silverstripe-siteconfig repo:silverstripe/silverstripe-assets repo:silverstripe/silverstripe-campaign-admin repo:silverstripe/silverstripe-errorpage repo:silverstripe/silverstripe-graphql repo:silverstripe/recipe-core repo:silverstripe/recipe-plugin repo:silverstripe/recipe-cms
         `;
-      }
-    },
-
-    methods: {
-      /**
-       * Form submission handler that will update the `submitQuery` state that
-       * the `<ApolloQuery>` component is watching to make the API requests.
-       *
-       * @return {void}
-       */
-      onClick() {
-        this.submitQuery = this.query;
-      }
     }
-  };
+  },
+
+  methods: {
+    /**
+     * Form submission handler that will update the `submitQuery` state that
+     * the `<ApolloQuery>` component is watching to make the API requests.
+     *
+     * @return {void}
+     */
+    onClick() {
+      this.submitQuery = this.query;
+    },
+    setMode(mode) {
+      this.mode = mode;
+    }
+  }
+};
 </script>
 
 <style scoped>
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
   .form,
   .input,
+  .submit,
   .apollo,
   .message {
     padding: 12px;
   }
 
+  .form {
+    font-family: "Helvetica Neue";
+    color: #8F9FBA;
+    background-color: #eef0f4;
+    border-radius: 6px 6px 0 0;
+    padding: 18px 20px 0 20px;
+  }
+
+  .searchbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    background-color: white;
+    border: solid 1px #CED3D9;
+    border-radius: 3px;
+    padding: 3px;
+  }
+
   .input {
     font-family: inherit;
     font-size: inherit;
-    border: solid 2px #ccc;
+  }
+
+  .input__query {
+    border: none;
+    flex-grow: 1;
+    font-size: 16px;
+    font-style: italic;
+    line-height: 20px;
+  }
+
+  .submit {
+    color: white;
+    background-color: #0071C4;
+    border: 1px solid white;
     border-radius: 3px;
+    font-size: 14px;
+    line-height: 20px;
+    flex-grow: 0;
+  }
+
+  .tabs {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .tab {
+    padding: 15px;
+  }
+
+  .tab--title {
+    text-decoration: none;
+    color: #43536D;
+  }
+
+  .tab__active {
+    border-bottom: 5px solid #0171c4;
   }
 
   .error {
