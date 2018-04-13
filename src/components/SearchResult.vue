@@ -11,7 +11,7 @@
       </h3>
       <a :href="issueData.repository.url" class="result__repository" target="_blank">{{ issueData.repository.name }}</a>
       <span class="result__created">{{ createdNice }}</span>
-      <div class="result__labels">
+      <div class="result__labels" v-if="labelsDefined">
         <span class="result__labels-title">Labels: </span>
         <span
           v-for="label in issueData.labels.nodes"
@@ -84,6 +84,15 @@ export default {
       const date = new Date(this.issueData.createdAt);
 
       return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    },
+
+    /**
+     * Helper to check if the issue has labels defined.
+     *
+     * @return {Boolean}
+     */
+    labelsDefined() {
+      return this.issueData.labels.nodes.length > 0;
     }
   },
 
