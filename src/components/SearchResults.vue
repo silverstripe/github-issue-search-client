@@ -25,31 +25,27 @@
       </form>
     </div>
 
-    <!-- Apollo watched Graphql query -->
-    <ApolloQuery
-      :query="require('../graphql/Search.gql')"
-      :variables="{ query: compositeQuery }"
-    >
-      <template slot-scope="{ result: { loading, error, data } }">
-        <!-- Loading -->
-        <div v-if="loading" class="loading apollo">Loading...</div>
+    <!-- Loading -->
+    <div v-if="loading && allResults.edges.length == 0" class="loading apollo">Loading...</div>
 
-        <!-- Error -->
-        <div v-else-if="error" class="error apollo">An error occured</div>
+    <!-- Error -->
+    <div v-else-if="error" class="error apollo">An error occured</div>
 
-        <!-- Result -->
-        <div v-else-if="data" class="results apollo">
-          <h3 class="results__title">Search results</h3>
-          <ul class="results__list">
-            <SearchResult v-for="issue in data.search.nodes" :key="issue.id" :issue-data="issue" />
-          </ul>
-        </div>
+    <!-- Result -->
+    <div v-else-if="allResults.edges.length > 0" class="results apollo">
+      <h3 class="results__title">Search results</h3>
+      <ul class="results__list">
+        <SearchResult v-for="issue in allResults.edges" :key="issue.id" :issue-data="issue" />
+      </ul>
+      <div class="results__footer">
+        <button class="btn" v-bind:disabled="loading == 1" @click="getMoreResults(allResults.pageInfo.endCursor)">
+          <template v-if="loading == 0">Show More</template><template v-else>Loading Results</template>
+        </button>
+      </div>
+    </div>
 
-        <!-- No result -->
-        <div v-else class="no-result apollo">No result :(</div>
-      </template>
-    </ApolloQuery>
-
+    <!-- No result -->
+    <div v-else class="no-result apollo">No matching results</div>
   </div>
 </template>
 
@@ -61,7 +57,10 @@ export default {
     return {
       query: "",
       submitQuery: "",
-      mode: "ALL"
+      mode: "ALL",
+      loading: 0,
+      allResults: [],
+      error: null
     };
   },
 
@@ -109,6 +108,45 @@ export default {
     },
     setMode(mode) {
       this.mode = mode;
+    },
+    getMoreResults(pageCursor) {
+      this.$apollo.queries.allResults.fetchMore({
+        variables: {
+          query: this.compositeQuery,
+          pageCursor: pageCursor
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          console.log(previousResult, 'previousResult');
+          console.log(fetchMoreResult, 'fetchMoreResult');
+
+          const search = {
+            search: {
+              pageInfo: { ...fetchMoreResult.search.pageInfo },
+              edges: [...previousResult.search.edges, ...fetchMoreResult.search.edges],
+              __typename: previousResult.search.__typename
+            }
+          };
+          console.log(search);
+
+          return search;
+        }
+      })
+    }
+  },
+
+  apollo: {
+    allResults: {
+      query: require('../graphql/Search.gql'),
+      variables() {
+        return {
+          query: this.compositeQuery
+        }
+      },
+      loadingKey: 'loading',
+      result(ApolloQueryResult) {
+        console.log(ApolloQueryResult, 'result');
+        this.allResults = ApolloQueryResult.data.search;
+      }
     }
   }
 };
@@ -124,7 +162,8 @@ export default {
   .form,
   .input,
   .submit,
-  .message {
+  .message,
+  .btn {
     padding: 12px;
   }
 
@@ -161,7 +200,7 @@ export default {
     line-height: 20px;
   }
 
-  .submit {
+  .submit, .btn {
     color: white;
     background-color: #0071C4;
     border: 1px solid white;
@@ -169,6 +208,11 @@ export default {
     font-size: 14px;
     line-height: 20px;
     flex-grow: 0;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    background-color: #999;
   }
 
   .tabs {
@@ -205,5 +249,10 @@ export default {
     list-style: none;
     margin: 0;
     padding: 0;
+  }
+
+  .results__footer {
+    text-align: center;
+    margin-bottom: 60px;
   }
 </style>

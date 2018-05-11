@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueApollo from "vue-apollo";
 import createApolloClient from "./apollo";
+import { InMemoryCache } from "apollo-cache-inmemory";
 
 // Install the vue plugin
 Vue.use(VueApollo);
@@ -21,5 +22,6 @@ export const apolloClient = createApolloClient(options);
 
 // Create vue apollo provider
 export const apolloProvider = new VueApollo({
-  defaultClient: apolloClient
+  defaultClient: apolloClient,
+  cache: new InMemoryCache()
 });

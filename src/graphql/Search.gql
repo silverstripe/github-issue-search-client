@@ -1,25 +1,31 @@
-query($query:String!) {
-  search(query:$query, type:ISSUE, first:10) {
-    nodes {
-      ...on Issue {
-        id,
-        title,
-        url,
-        state,
-        createdAt,
-        repository {
+query($query:String!, $pageCursor:String) {
+  search(query:$query, type:ISSUE, first:20, after:$pageCursor) {
+    edges {
+      node {
+        ...on Issue {
           id,
-          name,
-          url
-        },
-        labels(first:10) {
-          nodes {
+          title,
+          url,
+          state,
+          createdAt,
+          repository {
             id,
             name,
-            color
+            url
+          },
+          labels(first:10) {
+            nodes {
+              id,
+              name,
+              color
+            }
           }
         }
       }
+    }
+    pageInfo {
+      endCursor,
+      hasNextPage
     }
   }
 }
