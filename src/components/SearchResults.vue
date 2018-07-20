@@ -12,13 +12,13 @@
           <input type="submit" class="submit" @click.prevent="onClick" value="Search" />
         </div>
         <ul class="tabs">
-          <li v-bind:class="{'tab': true, 'tab__active':(mode == 'ALL')}">
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'ALL')}">
             <a class="tab--title" href="#" @click="setMode('ALL')">All Issues</a>
           </li>
-          <li v-bind:class="{'tab': true, 'tab__active':(mode == 'UX')}">
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'UX')}">
             <a class="tab--title" href="#" @click="setMode('UX')">UX Issues</a>
           </li>
-          <li v-bind:class="{'tab': true, 'tab__active':(mode == 'RFC')}">
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'RFC')}">
             <a class="tab--title" href="#" @click="setMode('RFC')">RFCs</a>
           </li>
         </ul>
@@ -26,10 +26,10 @@
     </div>
 
     <!-- Loading -->
-    <div v-if="loading && allResults.edges.length == 0" class="loading apollo">Loading...</div>
+    <div v-if="loading && !allResults.edges" class="btn loading apollo">Loading...</div>
 
     <!-- Error -->
-    <div v-else-if="error" class="error apollo">An error occured</div>
+    <div v-else-if="error" class="error apollo">An error occurred.</div>
 
     <!-- Result -->
     <div v-else-if="allResults.edges.length > 0" class="results apollo">
@@ -38,19 +38,22 @@
         <SearchResult v-for="issue in allResults.edges" :key="issue.id" :issue-data="issue" />
       </ul>
       <div class="results__footer">
-        <button class="btn" v-bind:disabled="loading == 1" @click="getMoreResults(allResults.pageInfo.endCursor)">
-          <template v-if="loading == 0">Show More</template><template v-else>Loading Results</template>
+        <button v-if="showShowMore" class="btn" v-bind:disabled="loading == 1" @click="getMoreResults">
+          <template v-if="loading == 0">Show More</template>
+          <template v-else>Loading More</template>
         </button>
       </div>
     </div>
 
     <!-- No result -->
-    <div v-else class="no-result apollo">No matching results</div>
+    <div v-else class="no-result apollo">No matching results.</div>
+
   </div>
 </template>
 
 <script>
 import SearchResult from "./SearchResult";
+import SearchQuery from "../graphql/Search.gql";
 
 export default {
   data() {
@@ -91,8 +94,18 @@ export default {
           ${this.modeQuery}
           is:open
           is:issue
-          repo:silverstripe/silverstripe-framework repo:silverstripe/silverstripe-cms repo:silverstripe/silverstripe-admin repo:silverstripe/silverstripe-installer repo:silverstripe/silverstripe-asset-admin repo:silverstripe/silverstripe-versioned repo:silverstripe/silverstripe-reports repo:silverstripe/silverstripe-siteconfig repo:silverstripe/silverstripe-assets repo:silverstripe/silverstripe-campaign-admin repo:silverstripe/silverstripe-errorpage repo:silverstripe/silverstripe-graphql repo:silverstripe/recipe-core repo:silverstripe/recipe-plugin repo:silverstripe/recipe-cms
+          repo:silverstripe/silverstripe-framework repo:silverstripe/silverstripe-cms
+          repo:silverstripe/silverstripe-admin repo:silverstripe/silverstripe-installer
+          repo:silverstripe/silverstripe-asset-admin repo:silverstripe/silverstripe-versioned
+          repo:silverstripe/silverstripe-reports repo:silverstripe/silverstripe-siteconfig
+          repo:silverstripe/silverstripe-assets repo:silverstripe/silverstripe-campaign-admin
+          repo:silverstripe/silverstripe-errorpage repo:silverstripe/silverstripe-graphql
+          repo:silverstripe/recipe-core repo:silverstripe/recipe-plugin repo:silverstripe/recipe-cms
         `;
+    },
+
+    showShowMore() {
+      return this.allResults.pageInfo && this.allResults.pageInfo['hasNextPage'];
     }
   },
 
@@ -109,16 +122,13 @@ export default {
     setMode(mode) {
       this.mode = mode;
     },
-    getMoreResults(pageCursor) {
+    getMoreResults() {
       this.$apollo.queries.allResults.fetchMore({
         variables: {
           query: this.compositeQuery,
-          pageCursor: pageCursor
+          pageCursor: this.allResults.pageInfo['endCursor'],
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
-          console.log(previousResult, 'previousResult');
-          console.log(fetchMoreResult, 'fetchMoreResult');
-
           const search = {
             search: {
               pageInfo: { ...fetchMoreResult.search.pageInfo },
@@ -126,8 +136,6 @@ export default {
               __typename: previousResult.search.__typename
             }
           };
-          console.log(search);
-
           return search;
         }
       })
@@ -136,16 +144,19 @@ export default {
 
   apollo: {
     allResults: {
-      query: require('../graphql/Search.gql'),
+      query: SearchQuery,
       variables() {
         return {
           query: this.compositeQuery
         }
       },
+
+      // Bind query loading to component property
       loadingKey: 'loading',
-      result(ApolloQueryResult) {
-        console.log(ApolloQueryResult, 'result');
-        this.allResults = ApolloQueryResult.data.search;
+
+      // When data is returned from query, define which data to assign to allResults
+      update(data) {
+        return data.search;
       }
     }
   }
@@ -168,23 +179,30 @@ export default {
   }
 
   .form {
-    font-family: "Helvetica Neue";
-    color: #8F9FBA;
     background-color: #eef0f4;
     border-radius: 6px 6px 0 0;
+    color: #8F9FBA;
+    font-family: "Helvetica Neue", sans-serif;
     margin-bottom: 40px;
     padding: 18px 20px 0 20px;
   }
 
   .searchbar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
     background-color: white;
     border: solid 1px #CED3D9;
     border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     padding: 3px;
+    width: 100%;
+  }
+
+  .loading {
+    background: #efefef;
+    max-width: 100px;
+    margin: 0 auto;
+    text-align: center;
   }
 
   .input {
@@ -201,18 +219,19 @@ export default {
   }
 
   .submit, .btn {
-    color: white;
     background-color: #0071C4;
     border: 1px solid white;
     border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    flex-grow: 0;
     font-size: 14px;
     line-height: 20px;
-    flex-grow: 0;
-    cursor: pointer;
   }
 
-  button:disabled {
+  button:disabled, .btn.loading {
     background-color: #999;
+    cursor: wait;
   }
 
   .tabs {
@@ -225,8 +244,8 @@ export default {
   }
 
   .tab--title {
-    text-decoration: none;
     color: #43536D;
+    text-decoration: none;
   }
 
   .tab__active {
@@ -240,7 +259,7 @@ export default {
   .results__title {
     border-bottom: 1px solid #E1E5ED;
     color: #43536D;
-    font-size: 15px;
+    font-size: 22px;
     margin-bottom: 20px;
     padding-bottom: 15px;
   }
@@ -252,7 +271,12 @@ export default {
   }
 
   .results__footer {
-    text-align: center;
     margin-bottom: 60px;
+    text-align: center;
   }
+
+  .no-result {
+    text-align: center;
+  }
+
 </style>
