@@ -2,23 +2,22 @@
   <li class="result">
     <div class="result__inner" :class="`result__inner--${statusLower}`">
       <h3 class="result__title">
-        <a :href="issueData.url" class="result__title-link" target="_blank">
-          {{ issueData.title }}
+        <a :href="issueData.node.url" class="result__title-link" target="_blank">
+          {{ issueData.node.title }}
         </a>
         <span class="result__status" :class="`result__status--${statusLower}`">
           {{ status }}
         </span>
       </h3>
-      <a :href="issueData.repository.url" class="result__repository" target="_blank">{{ issueData.repository.name }}</a>
+      <a :href="issueData.node.repository.url" class="result__repository" target="_blank">{{ issueData.node.repository.name }}</a>
       <span class="result__created">{{ createdNice }}</span>
       <div class="result__labels" v-if="labelsDefined">
         <span class="result__labels-title">Labels: </span>
         <span
-          v-for="label in issueData.labels.nodes"
+          v-for="label in issueData.node.labels.nodes"
           :key="label.id"
           :style="{ borderColor: `#${label.color}` }"
-          class="result__label"
-        >
+          class="result__label">
           {{ label.name }}
         </span>
       </div>
@@ -61,7 +60,7 @@ export default {
      * @return {String}
      */
     status() {
-      const state = this.issueData.state;
+      const state = this.issueData.node.state;
 
       return state.charAt(0) + state.slice(1).toLowerCase();
     },
@@ -72,7 +71,7 @@ export default {
      * @return {String}
      */
     statusLower() {
-      return this.issueData.state.toLowerCase();
+      return this.issueData.node.state.toLowerCase();
     },
 
     /**
@@ -81,7 +80,7 @@ export default {
      * @return {String}
      */
     createdNice() {
-      const date = new Date(this.issueData.createdAt);
+      const date = new Date(this.issueData.node.createdAt);
 
       return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     },
@@ -92,7 +91,7 @@ export default {
      * @return {Boolean}
      */
     labelsDefined() {
-      return this.issueData.labels.nodes.length > 0;
+      return this.issueData.node.labels.nodes.length > 0;
     }
   },
 
