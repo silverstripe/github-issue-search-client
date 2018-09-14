@@ -46,3 +46,14 @@ npm run serve
 ```
 npm run build
 ```
+
+## Deploy
+
+The project is published to public access [Github Pages](https://cli.vuejs.org/guide/deployment.html#github-pages) by default.
+
+```
+./deploy.sh
+```
+
+## Usage
+
