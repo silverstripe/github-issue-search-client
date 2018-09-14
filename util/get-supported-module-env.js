@@ -6,16 +6,16 @@ const coreRepos = [
   'silverstripe/silverstripe-assets',
   'silverstripe/silverstripe-config',
   'silverstripe/silverstripe-framework',
-  "silverstripe/admin",
-  "silverstripe/asset-admin",
-  "silverstripe/campaign-admin",
-  "silverstripe/cms",
-  "silverstripe/errorpage",
-  "silverstripe/graphql",
-  "silverstripe/reports",
-  "silverstripe/siteconfig",
-  "silverstripe/versioned-admin",
-  "silverstripe/versioned"
+  "silverstripe/silverstripe-admin",
+  "silverstripe/silverstripe-asset-admin",
+  "silverstripe/silverstripe-campaign-admin",
+  "silverstripe/silverstripe-cms",
+  "silverstripe/silverstripe-errorpage",
+  "silverstripe/silverstripe-graphql",
+  "silverstripe/silverstripe-reports",
+  "silverstripe/silverstripe-siteconfig",
+  "silverstripe/silverstripe-versioned-admin",
+  "silverstripe/silverstripe-versioned"
 ];
 request(URL, function (error, response, body) {
   const modules = JSON.parse(body);

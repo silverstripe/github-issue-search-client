@@ -11,6 +11,10 @@
           >
           <input type="submit" class="submit" @click.prevent="onClick" value="Search" />
         </div>
+        <div class="options">
+          <input type="checkbox" id="checkbox" v-model="includeSupported">
+          <label for="checkbox">Include <a href="#">supported modules</a></label>
+        </div>
         <ul class="tabs">
           <li v-bind:class="{'tab': true, 'tab__active': (mode === 'ALL')}">
             <a class="tab--title" href="#" @click="setMode('ALL')">All Issues</a>
@@ -61,6 +65,7 @@ export default {
       query: "",
       submitQuery: "",
       mode: "ALL",
+      includeSupported: true,
       loading: 0,
       allResults: [],
       error: null
@@ -88,29 +93,29 @@ export default {
       return query;
     },
 
-    compositeQuery() {
+    repoQuery() {
       if (!process.env.VUE_APP_REPO_GROUPS) {
         console.error('Please define VUE_APP_REPO_GROUPS in your .env');
       }
 
       // TODO Pass this through main.js as props
       const repoGroups = JSON.parse(process.env.VUE_APP_REPO_GROUPS);
+      const ids = this.includeSupported ? ['core', 'supported'] : ['core'];
 
-      // TODO Make selectable
-      const ids = ['core', 'supported'];
-
-      const repoSearchStr = repoGroups
+      return repoGroups
         .filter(repoGroup => ids.includes(repoGroup.id))
         .reduce((repos, repoGroup) => repos.concat(repoGroup.repos), [])
         .map(repo => `repo:${repo}`)
         .join(' ');
+    },
 
+    compositeQuery() {
       return `
           ${this.submitQuery}
           ${this.modeQuery}
           is:open
           is:issue
-          ${repoSearchStr}
+          ${this.repoQuery}
         `;
     },
 
@@ -180,6 +185,10 @@ export default {
     padding: 0;
   }
 
+  label {
+    color: #43536D;
+  }
+
   .form,
   .input,
   .submit,
@@ -242,6 +251,11 @@ export default {
   button:disabled, .btn.loading {
     background-color: #999;
     cursor: wait;
+  }
+
+  .options {
+    margin: 10px 0;
+    font-size: 0.8em;
   }
 
   .tabs {
