@@ -23,6 +23,17 @@ VUE_APP_GRAPHQL_TOKEN=<token>
 ```
 
 Get a [Github Personal Access Token](https://github.com/settings/tokens) and chuck it in `<token>`.
+Note that the token should NOT have any other permissions/scopes, since it will be included
+in the client bundle (and is readable by everyone through network requests).
+The only reason to include it here is avoiding to hit Github's rate limits without it.
+
+In order to get an updated list of our [supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/),
+you can run the following command, and save the output to `VUE_APP_REPO_GROUPS`
+in the `.env.` file:
+
+```
+node util/get-supported-module-env.js
+```
 
 ## Run locally
 

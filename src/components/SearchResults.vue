@@ -89,18 +89,28 @@ export default {
     },
 
     compositeQuery() {
+      if (!process.env.VUE_APP_REPO_GROUPS) {
+        console.error('Please define VUE_APP_REPO_GROUPS in your .env');
+      }
+
+      // TODO Pass this through main.js as props
+      const repoGroups = JSON.parse(process.env.VUE_APP_REPO_GROUPS);
+
+      // TODO Make selectable
+      const ids = ['core', 'supported'];
+
+      const repoSearchStr = repoGroups
+        .filter(repoGroup => ids.includes(repoGroup.id))
+        .reduce((repos, repoGroup) => repos.concat(repoGroup.repos), [])
+        .map(repo => `repo:${repo}`)
+        .join(' ');
+
       return `
           ${this.submitQuery}
           ${this.modeQuery}
           is:open
           is:issue
-          repo:silverstripe/silverstripe-framework repo:silverstripe/silverstripe-cms
-          repo:silverstripe/silverstripe-admin repo:silverstripe/silverstripe-installer
-          repo:silverstripe/silverstripe-asset-admin repo:silverstripe/silverstripe-versioned
-          repo:silverstripe/silverstripe-reports repo:silverstripe/silverstripe-siteconfig
-          repo:silverstripe/silverstripe-assets repo:silverstripe/silverstripe-campaign-admin
-          repo:silverstripe/silverstripe-errorpage repo:silverstripe/silverstripe-graphql
-          repo:silverstripe/recipe-core repo:silverstripe/recipe-plugin repo:silverstripe/recipe-cms
+          ${repoSearchStr}
         `;
     },
 

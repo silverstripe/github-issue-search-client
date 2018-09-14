@@ -18,6 +18,7 @@
     "apollo-upload-client": "^7.0.0-alpha.4",
     "apollo-utilities": "^1.0.1",
     "graphql": "^0.13.0",
+    "request": "^2.88.0",
     "subscriptions-transport-ws": "^0.9.5",
     "vue": "^2.5.13",
     "vue-apollo": "^3.0.0-alpha.1"
