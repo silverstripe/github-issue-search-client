@@ -2,12 +2,19 @@
 
 ## Overview
 
-This app uses [vue-cli](https://github.com/vuejs/vue-cli/blob/dev/docs/cli.md)
+This app uses the Github issue search API to provide
+a convenient issue browser across all of our
+[supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/).
+
+It uses [vue-cli](https://github.com/vuejs/vue-cli/blob/dev/docs/cli.md)
 to simplify local development and production buidls for VueJS.
+You can use it on https://silverstripeltd.github.io/github-issue-search-client/
 
 ![Preview](_img/preview.png)
 
 ## Install
+
+Use Node v8 or higher.
 
 ```
 npm install
