@@ -20,13 +20,13 @@
             <a class="tab--title" href="#" @click="setMode('')">All issues</a>
           </li>
           <li v-bind:class="{'tab': true, 'tab__active': (mode === 'ux')}">
-            <a class="tab--title" href="#" @click="setMode('ux')">UX issues</a>
+            <a class="tab--title" title="User experience issues" href="#" @click="setMode('ux')">UX issues</a>
           </li>
           <li v-bind:class="{'tab': true, 'tab__active': (mode === 'easy')}">
             <a class="tab--title" href="#" @click="setMode('easy')">Good first issues</a>
           </li>
           <li v-bind:class="{'tab': true, 'tab__active': (mode === 'rfc')}">
-            <a class="tab--title" href="#" @click="setMode('rfc')">RFCs</a>
+            <a class="tab--title" title="Requests For Comments" href="#" @click="setMode('rfc')">RFCs</a>
           </li>
         </ul>
       </form>
