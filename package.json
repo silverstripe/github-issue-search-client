@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve --open",
     "build": "vue-cli-service build",
-    "now-build": "npm run build",
+    "now-build": "node util/get-supported-module-env.js && npm run build",
+    "get-repos": "node util/get-supported-module-env.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

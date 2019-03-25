@@ -1,4 +1,6 @@
 const request = require('request');
+const fs = require('fs');
+const path = require('path');
 
 const URL = 'https://raw.githubusercontent.com/silverstripe/supported-modules/gh-pages/modules.json';
 const coreRepos = [
@@ -33,5 +35,10 @@ request(URL, function (error, response, body) {
     }
   ];
 
-  console.log(JSON.stringify(out));
+  fs.writeFile(path.join(__dirname, '../src/') + '/repos.json', JSON.stringify(out), function(err, data) {
+    if (err) {
+      return console.log(error);
+    }
+    console.log('Successfully written to file "src/repos.json"');
+  });
 });

@@ -37,7 +37,9 @@ in the client bundle (and is readable by everyone through network requests).
 The only reason to include it here is avoiding to hit Github's rate limits without it.
 
 In order to get an updated list of our [supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/),
-you can run the following command, and save the output as the `repoGroups` property in `SearchResults.vue` (todo: improve this).
+you can run the following command. This will be written to the `repos.json` file in the `src` folder, which can be
+updated (in VCS) periodically if required. This will also happen during a deployment and auto-update in the
+Now environment.
 
 ```
 node util/get-supported-module-env.js
@@ -64,7 +66,18 @@ logged in.
 now
 ```
 
-It will give you an updated URL to run in your browser.
+It will give you an updated URL to run in your browser. This will also run automatically as a Git hook.
+
+### API keys
+
+To store the GraphQL API token in an environment variable for Now, you need to use the CLI to save is as a
+[secret](https://zeit.co/docs/v2/deployments/environment-variables-and-secrets#securing-environment-variables-using-secrets):
+
+```
+now secret add graphql-api-key YOURAPITOKENHERE
+``` 
+
+The secret variable name `@graphql-api-key` is referenced from `now.json` to map to an environment variable.
 
 ## Usage
 
