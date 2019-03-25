@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "name": "github-issue-search-client",
+  "env": {
+    "VUE_APP_GRAPHQL_ENDPOINT": "https://api.github.com",
+    "VUE_APP_GRAPHQL_TOKEN": "@graphql-api-key"
+  },
+  "builds": [
+    { "src": "package.json", "use": "@now/static-build" }
+  ],
+  "routes": [
+    { "src": "^/github-issue-search-client/(.*)", "dest": "/$1" },
+    { "src": "^/favicon.ico", "dest":  "/favicon.ico" },
+    { "src": "^/logo.png", "dest":  "/logo.png" },
+    { "src": ".*", "dest": "/index.html" }
+  ]
+}

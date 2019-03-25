@@ -20,6 +20,8 @@ Use Node v8 or higher.
 npm install
 ```
 
+For deployment, you will need to [install Now](https://zeit.co/download) and log in.
+
 ## Configure
 
 Create an `.env` with:
@@ -35,8 +37,7 @@ in the client bundle (and is readable by everyone through network requests).
 The only reason to include it here is avoiding to hit Github's rate limits without it.
 
 In order to get an updated list of our [supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/),
-you can run the following command, and save the output to `VUE_APP_REPO_GROUPS`
-in the `.env.` file:
+you can run the following command, and save the output as the `repoGroups` property in `SearchResults.vue` (todo: improve this).
 
 ```
 node util/get-supported-module-env.js
@@ -56,11 +57,14 @@ npm run build
 
 ## Deploy
 
-The project is published to public access [Github Pages](https://cli.vuejs.org/guide/deployment.html#github-pages) by default.
+The project is published to [Now](https://zeit.co/now). To do this you will need to have the Now CLI installed, and be
+logged in.
 
 ```
-./deploy.sh
+now
 ```
+
+It will give you an updated URL to run in your browser.
 
 ## Usage
 
