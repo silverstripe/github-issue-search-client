@@ -59,10 +59,18 @@ npm run build
 
 ## Deploy
 
-The project is published to [Now](https://zeit.co/now). To do this you will need to have the Now CLI installed, and be
-logged in.
+The project is published to [Now](https://zeit.co/now). To do this you will need to have the Now CLI installed, be
+logged in, part of the SilverStripe team, and have the team configured in your profile. For access to the team,
+contact internally.
 
 ```
+# Login if necessary
+now login
+
+# Switch to SilverStripe Ltd team
+now teams switch silverstripeltd
+
+# Ship it!
 now
 ```
 
