@@ -16,8 +16,8 @@
           <label for="checkbox">Include <a href="#">supported modules</a></label>
         </div>
         <ul class="tabs">
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'all')}">
-            <a class="tab--title" href="#" @click="setMode('all')">All issues</a>
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === '')}">
+            <a class="tab--title" href="#" @click="setMode('')">All issues</a>
           </li>
           <li v-bind:class="{'tab': true, 'tab__active': (mode === 'ux')}">
             <a class="tab--title" href="#" @click="setMode('ux')">UX issues</a>
@@ -84,21 +84,13 @@ export default {
 
   computed: {
     modeQuery() {
-      let query = "";
+      const queryModes = {
+        ux: 'label:type/ux',
+        rfc: 'RFC', // search term
+        easy: 'label:effort/easy',
+      };
 
-      if (this.mode === "all") {
-        query = "";
-      } else if (this.mode === "ux") {
-        query = "label:type/ux";
-      } else if (this.mode === "rfc") {
-        query = "RFC"; // search term
-      } else if (this.mode === "easy") {
-        query = "label:effort/easy";
-      } else {
-        query = `Unknown mode: ${this.mode}`;
-      }
-
-      return query;
+      return queryModes[this.mode] || '';
     },
 
     repoQuery() {
