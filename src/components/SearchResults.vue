@@ -13,7 +13,7 @@
         </div>
         <div class="options">
           <input type="checkbox" id="checkbox" v-model="includeSupported">
-          <label for="checkbox">Include <a href="#">supported modules</a></label>
+          <label for="checkbox">Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a></label>
         </div>
         <ul class="tabs">
           <li v-bind:class="{'tab': true, 'tab__active': (mode === '')}">
