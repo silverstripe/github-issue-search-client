@@ -42,7 +42,7 @@ updated (in VCS) periodically if required. This will also happen during a deploy
 Now environment.
 
 ```
-node util/get-supported-module-env.js
+npm run get-repos
 ```
 
 ## Run locally
