@@ -16,14 +16,17 @@
           <label for="checkbox">Include <a href="#">supported modules</a></label>
         </div>
         <ul class="tabs">
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'ALL')}">
-            <a class="tab--title" href="#" @click="setMode('ALL')">All Issues</a>
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === '')}">
+            <a class="tab--title" href="#" @click="setMode('')">All issues</a>
           </li>
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'UX')}">
-            <a class="tab--title" href="#" @click="setMode('UX')">UX Issues</a>
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'ux')}">
+            <a class="tab--title" href="#" @click="setMode('ux')">UX issues</a>
           </li>
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'RFC')}">
-            <a class="tab--title" href="#" @click="setMode('RFC')">RFCs</a>
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'easy')}">
+            <a class="tab--title" href="#" @click="setMode('easy')">Good first issues</a>
+          </li>
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'rfc')}">
+            <a class="tab--title" href="#" @click="setMode('rfc')">RFCs</a>
           </li>
         </ul>
       </form>
@@ -58,13 +61,16 @@
 <script>
 import SearchResult from "./SearchResult";
 import SearchQuery from "../graphql/Search.gql";
+import 'url-search-params-polyfill';
 
 export default {
   data() {
+    const searchParams = this.getSearchParams();
+
     return {
-      query: "",
-      submitQuery: "",
-      mode: "ALL",
+      query: searchParams.get('q') || '',
+      submitQuery: searchParams.get('q') || '',
+      mode: searchParams.get('mode') || 'all',
       includeSupported: true,
       loading: 0,
       allResults: [],
@@ -78,19 +84,13 @@ export default {
 
   computed: {
     modeQuery() {
-      let query = "";
+      const queryModes = {
+        ux: 'label:type/ux',
+        rfc: 'RFC', // search term
+        easy: 'label:effort/easy',
+      };
 
-      if (this.mode === "ALL") {
-        query = "";
-      } else if (this.mode === "UX") {
-        query = "label:type/ux";
-      } else if (this.mode === "RFC") {
-        query = "RFC"; // search term
-      } else {
-        query = `Unknown mode: ${this.mode}`;
-      }
-
-      return query;
+      return queryModes[this.mode] || '';
     },
 
     repoQuery() {
@@ -133,9 +133,11 @@ export default {
      */
     onClick() {
       this.submitQuery = this.query;
+      this.updateURLWithParam('q', this.query);
     },
     setMode(mode) {
       this.mode = mode;
+      this.updateURLWithParam('mode', this.mode);
     },
     getMoreResults() {
       this.$apollo.queries.allResults.fetchMore({
@@ -154,6 +156,29 @@ export default {
           return search;
         }
       })
+    },
+    /**
+     * Gets the current URL search params in a structured object
+     *
+     * @returns {URLSearchParams}
+     */
+    getSearchParams() {
+      return new URLSearchParams(window.location.search);
+    },
+    /**
+     * Update the current URL state to include entered filters and search queries
+     *
+     * @param {string} key
+     * @param {string} value
+     */
+    updateURLWithParam(key, value) {
+      let searchParams = this.getSearchParams();
+      if (!value.length) {
+        searchParams.delete(key);
+      } else {
+        searchParams.set(key, value);
+      }
+      window.history.replaceState({}, '', `${location.pathname}?${searchParams}`);
     }
   },
 

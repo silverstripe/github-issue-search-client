@@ -20,6 +20,7 @@
     "graphql": "^0.13.0",
     "request": "^2.88.0",
     "subscriptions-transport-ws": "^0.9.5",
+    "url-search-params-polyfill": "^5.0.0",
     "vue": "^2.5.13",
     "vue-apollo": "^3.0.0-alpha.1"
   },
