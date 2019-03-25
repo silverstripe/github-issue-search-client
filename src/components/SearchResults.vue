@@ -12,8 +12,15 @@
           <input type="submit" class="submit" @click.prevent="onClick" value="Search" />
         </div>
         <div class="options">
-          <input type="checkbox" id="checkbox" v-model="includeSupported">
-          <label for="checkbox">Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a></label>
+          <label class="option-filter">
+            <input type="checkbox" id="supported-modules" v-model="includeSupported" @change="setSupportedModules()">
+            Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
+          </label>
+          <select id="issue-status" v-model="issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
+            <option value="open">Open issues</option>
+            <option value="closed">Closed issues</option>
+            <option value="all">Open and closed</option>
+          </select>
         </div>
         <ul class="tabs">
           <li v-bind:class="{'tab': true, 'tab__active': (mode === '')}">
@@ -72,7 +79,8 @@ export default {
       query: searchParams.get('q') || '',
       submitQuery: searchParams.get('q') || '',
       mode: searchParams.get('mode') || 'all',
-      includeSupported: true,
+      includeSupported: searchParams.get('supported') !== '0',
+      issueStatus: searchParams.get('status') || 'open',
       loading: 0,
       allResults: [],
       error: null,
@@ -110,11 +118,25 @@ export default {
         .join(' ');
     },
 
+    /**
+     * Returns a query component for filtering issues by their open/closed status. Defaults to
+     * only including open issues.
+     */
+    statusQuery() {
+      const queryParts = {
+        all: ' ',
+        open: 'is:open',
+        closed: 'is:closed',
+      };
+
+      return queryParts[this.issueStatus] || queryParts.Open;
+    },
+
     compositeQuery() {
       return `
           ${this.submitQuery}
           ${this.modeQuery}
-          is:open
+          ${this.statusQuery}
           is:issue
           ${this.repoQuery}
         `;
@@ -139,6 +161,12 @@ export default {
     setMode(mode) {
       this.mode = mode;
       this.updateURLWithParam('mode', this.mode);
+    },
+    setSupportedModules() {
+      this.updateURLWithParam('supported', this.includeSupported ? '1' : '0');
+    },
+    setIssueStatus() {
+      this.updateURLWithParam('status', this.issueStatus);
     },
     getMoreResults() {
       this.$apollo.queries.allResults.fetchMore({
@@ -327,6 +355,10 @@ export default {
 
   .no-result {
     text-align: center;
+  }
+
+  .option-filter {
+    margin-right: 20px;
   }
 
 </style>
