@@ -1,9 +1,11 @@
 {
   "version": 2,
   "name": "github-issue-search-client",
-  "env": {
-    "VUE_APP_GRAPHQL_ENDPOINT": "https://api.github.com",
-    "VUE_APP_GRAPHQL_TOKEN": "@graphql-api-key"
+  "build": {
+    "env": {
+      "VUE_APP_GRAPHQL_ENDPOINT": "https://api.github.com",
+      "VUE_APP_GRAPHQL_TOKEN": "@graphql-api-key"
+    }
   },
   "builds": [
     { "src": "package.json", "use": "@now/static-build" }

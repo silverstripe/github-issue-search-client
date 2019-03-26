@@ -78,7 +78,7 @@ export default {
     return {
       query: searchParams.get('q') || '',
       submitQuery: searchParams.get('q') || '',
-      mode: searchParams.get('mode') || 'all',
+      mode: searchParams.get('mode') || '',
       includeSupported: searchParams.get('supported') !== '0',
       issueStatus: searchParams.get('status') || 'open',
       loading: 0,
