@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "github-issue-search-client",
+  "alias": "silverstripe-github-issues.now.sh",
   "build": {
     "env": {
       "VUE_APP_GRAPHQL_ENDPOINT": "https://api.github.com",
