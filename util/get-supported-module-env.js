@@ -35,7 +35,7 @@ request(URL, function (error, response, body) {
     }
   ];
 
-  fs.writeFile(path.join(__dirname, '../src/') + '/repos.json', JSON.stringify(out), function(err, data) {
+  fs.writeFile(path.join(__dirname, '../src/') + '/repos.json', JSON.stringify(out, null, 2), function(err, data) {
     if (err) {
       return console.log(error);
     }
