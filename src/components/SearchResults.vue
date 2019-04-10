@@ -80,6 +80,7 @@ export default {
       submitQuery: searchParams.get('q') || '',
       mode: searchParams.get('mode') || '',
       includeSupported: searchParams.get('supported') !== '0',
+      productTeamMode: searchParams.get('product-team-mode') === '1',
       issueStatus: searchParams.get('status') || 'open',
       loading: 0,
       allResults: [],
@@ -109,7 +110,9 @@ export default {
       }
 
       // TODO Pass this through main.js as props
-      const ids = this.includeSupported ? ['core', 'supported'] : ['core'];
+      const coreGroups = this.productTeamMode ? ['core-product-team'] : ['core'];
+      const supportedGroups = this.productTeamMode ? ['core-product-team', 'supported-product-team'] : ['core', 'supported'];
+      const ids = this.includeSupported ? supportedGroups : coreGroups;
 
       return this.repoGroups
         .filter(repoGroup => ids.includes(repoGroup.id))

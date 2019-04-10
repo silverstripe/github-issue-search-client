@@ -3,22 +3,67 @@ const fs = require('fs');
 const path = require('path');
 
 const URL = 'https://raw.githubusercontent.com/silverstripe/supported-modules/gh-pages/modules.json';
+
+// Modules which are part of the default download
 const coreRepos = [
+  'silverstripe/recipe-cms',
+  'silverstripe/recipe-core',
+  'silverstripe/recipe-plugin',
+  'silverstripe/silverstripe-admin',
   'silverstripe/silverstripe-asset-admin',
   'silverstripe/silverstripe-assets',
+  'silverstripe/silverstripe-campaign-admin',
+  'silverstripe/silverstripe-cms',
   'silverstripe/silverstripe-config',
+  'silverstripe/silverstripe-errorpage',
   'silverstripe/silverstripe-framework',
-  "silverstripe/silverstripe-admin",
-  "silverstripe/silverstripe-asset-admin",
-  "silverstripe/silverstripe-campaign-admin",
-  "silverstripe/silverstripe-cms",
-  "silverstripe/silverstripe-errorpage",
-  "silverstripe/silverstripe-graphql",
-  "silverstripe/silverstripe-reports",
-  "silverstripe/silverstripe-siteconfig",
-  "silverstripe/silverstripe-versioned-admin",
-  "silverstripe/silverstripe-versioned"
+  'silverstripe/silverstripe-graphql',
+  'silverstripe/silverstripe-installer',
+  'silverstripe/silverstripe-reports',
+  'silverstripe-themes/silverstripe-simple',
+  'silverstripe/silverstripe-siteconfig',
+  'silverstripe/silverstripe-versioned',
+  'silverstripe/silverstripe-versioned-admin'
 ];
+
+// Modules which are maintained by the product team focused at 'core'.
+// This is an internal workflow aspect which allows this team to use this app
+// for their issue triage. It should match the zenhub.com board,
+// minus repos on github.com/silverstripe-security.
+const coreProductTeamRepos = [
+  'silverstripe/api.silverstripe.org',
+  'silverstripe/cow',
+  'silverstripe/demo.silverstripe.org',
+  'silverstripeltd/open-sourcerers',
+  'silverstripe/recipe-cms',
+  'silverstripe/recipe-core',
+  'silverstripe/recipe-plugin',
+  'silverstripe/silverstripe-admin',
+  'silverstripe/silverstripe-asset-admin',
+  'silverstripe/silverstripe-assets',
+  'silverstripe/silverstripe-behat-extension',
+  'silverstripe/silverstripe-campaign-admin',
+  'silverstripe/silverstripe-cms',
+  'silverstripe/silverstripe-config',
+  'silverstripe/silverstripe-errorpage',
+  'silverstripe/silverstripe-framework',
+  'silverstripe/silverstripe-frameworktest',
+  'silverstripe/silverstripe-graphql',
+  'silverstripe/silverstripe-graphql-devtools',
+  'silverstripe/silverstripe-installer',
+  'silverstripe/silverstripe-postgresql',
+  'silverstripe/silverstripe-reports',
+  'silverstripe/silverstripe-serve',
+  'silverstripe-themes/silverstripe-simple',
+  'silverstripe/silverstripe-siteconfig',
+  'silverstripe/silverstripe-sqlite3',
+  'silverstripe/silverstripe-testsession',
+  'silverstripe/silverstripe-upgrader',
+  'silverstripe/silverstripe-versioned',
+  'silverstripe/silverstripe-versioned-admin',
+  'silverstripe/vendor-plugin',
+  'silverstripe/webpack-config'
+]
 request(URL, function (error, response, body) {
   const modules = JSON.parse(body);
   const repos = modules.filter(module => module.type === 'supported-module').map(module => module.github);
@@ -32,10 +77,20 @@ request(URL, function (error, response, body) {
       id: 'supported',
       name: 'Supported',
       repos: repos.filter(repo => !coreRepos.indexOf(repo) > -1)
+    },
+    {
+      id: 'core-product-team',
+      name: 'Core Product Team',
+      repos: repos.filter(repo => coreProductTeamRepos.indexOf(repo) > -1)
+    },
+    {
+      id: 'supported-product-team',
+      name: 'Supported Modules Product Team',
+      repos: repos.filter(repo => !coreProductTeamRepos.indexOf(repo) > -1)
     }
   ];
 
-  fs.writeFile(path.join(__dirname, '../src/') + '/repos.json', JSON.stringify(out), function(err, data) {
+  fs.writeFile(path.join(__dirname, '../src/') + '/repos.json', JSON.stringify(out, null, 2), function(err, data) {
     if (err) {
       return console.log(error);
     }
