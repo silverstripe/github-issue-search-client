@@ -76,6 +76,7 @@ request(URL, function (error, response, body) {
     {
       id: 'supported',
       name: 'Supported',
+      // All supported modules including core
       repos: repos.filter(repo => !coreRepos.indexOf(repo) > -1)
     },
     {
@@ -86,7 +87,8 @@ request(URL, function (error, response, body) {
     {
       id: 'supported-product-team',
       name: 'Supported Modules Product Team',
-      repos: repos.filter(repo => !coreProductTeamRepos.indexOf(repo) > -1)
+      // Only supported modules which aren't "core product repos" already
+      repos: repos.filter(repo => coreProductTeamRepos.indexOf(repo) === -1)
     }
   ];
 
