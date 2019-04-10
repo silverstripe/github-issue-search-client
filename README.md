@@ -89,3 +89,14 @@ The secret variable name `@graphql-api-key` is referenced from `now.json` to map
 
 ## Usage
 
+### Product Team Mode
+
+By default, repos are split between "core repos" (what's part of the silverstripe.org download),
+and "all other supported modules". When this app is used by product teams at SilverStripe Ltd,
+the split isn't as clear. Repo maintenance responsibilities split along the same criteria
+("core vs. everything else"), but there's differences. To account of this,
+the app can be run in a "team mode" through a URL parameter:
+
+`?product-team-mode=1`
+
+This will cause different repos to be included in the requests to Github.
