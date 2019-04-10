@@ -14,7 +14,12 @@
         <div class="options">
           <label class="option-filter">
             <input type="checkbox" id="supported-modules" v-model="includeSupported" @change="setSupportedModules()">
-            Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
+            <span v-if="productTeamMode">
+              Only <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
+            </span>
+            <span v-else>
+              Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
+            </span>
           </label>
           <select id="issue-status" v-model="issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
             <option value="open">Open issues</option>
@@ -109,9 +114,13 @@ export default {
         console.error('Repository groups were not defined!');
       }
 
-      // TODO Pass this through main.js as props
+      // See README for "product team mode" explanation.
+      // Note that core issues are filtered out from supportedGroups in product team mode,
+      // in order to avoid cross-team noise in issue workflows.
       const coreGroups = this.productTeamMode ? ['core-product-team'] : ['core'];
-      const supportedGroups = this.productTeamMode ? ['core-product-team', 'supported-product-team'] : ['core', 'supported'];
+      const supportedGroups = this.productTeamMode ? ['supported-product-team'] : ['core', 'supported'];
+
+      // TODO Pass this through main.js as props
       const ids = this.includeSupported ? supportedGroups : coreGroups;
 
       return this.repoGroups
