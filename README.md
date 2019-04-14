@@ -7,7 +7,7 @@ a convenient issue browser across all of our
 [supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/).
 
 It uses [vue-cli](https://github.com/vuejs/vue-cli/blob/dev/docs/cli.md)
-to simplify local development and production buidls for VueJS.
+to simplify local development and production builds for VueJS.
 You can use it on https://silverstripe-github-issues.now.sh/.
 
 ![Preview](_img/preview.png)
