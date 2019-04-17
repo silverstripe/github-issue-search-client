@@ -57,6 +57,7 @@
         <SearchResult v-for="issue in allResults.edges" :key="issue.id" :issue-data="issue" />
       </ul>
       <div class="results__footer">
+        <p class="results__count">Showing {{allResults.edges.length}} of {{totalCount}}</p>
         <button v-if="showShowMore" class="btn" v-bind:disabled="loading == 1" @click="getMoreResults">
           <template v-if="loading == 0">Show More</template>
           <template v-else>Loading More</template>
@@ -88,6 +89,7 @@ export default {
       productTeamMode: searchParams.get('product-team-mode') === '1',
       issueStatus: searchParams.get('status') || 'open',
       loading: 0,
+      totalCount: 0,
       allResults: [],
       error: null,
       repoGroups,
@@ -190,6 +192,7 @@ export default {
           const search = {
             search: {
               pageInfo: { ...fetchMoreResult.search.pageInfo },
+              issueCount: fetchMoreResult.search.issueCount,
               edges: [...previousResult.search.edges, ...fetchMoreResult.search.edges],
               __typename: previousResult.search.__typename
             }
@@ -238,6 +241,10 @@ export default {
       // When data is returned from query, define which data to assign to allResults
       update(data) {
         return data.search;
+      },
+
+      result({ data }) {
+        this.totalCount = data.search.issueCount;
       }
     }
   }

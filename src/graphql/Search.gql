@@ -23,6 +23,7 @@ query($query:String!, $pageCursor:String) {
         }
       }
     }
+    issueCount
     pageInfo {
       endCursor,
       hasNextPage
