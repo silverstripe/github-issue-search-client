@@ -54,7 +54,7 @@
     <div v-else-if="allResults.edges.length > 0" class="results apollo">
       <h3 class="results__title">Search results</h3>
       <ul class="results__list">
-        <SearchResult v-for="issue in allResults.edges" :key="issue.id" :issue-data="issue" />
+        <SearchResult v-for="issue in allResults.edges" :key="issue.id" :issue-data="issue" @labelClicked="setQuery" />
       </ul>
       <div class="results__footer">
         <p class="results__count">Showing {{allResults.edges.length}} of {{totalCount}}</p>
@@ -169,6 +169,10 @@ export default {
      * @return {void}
      */
     onClick() {
+      this.setQuery(this.query);
+    },
+    setQuery(query) {
+      this.query = query;
       this.submitQuery = this.query;
       this.updateURLWithParam('q', this.query);
     },

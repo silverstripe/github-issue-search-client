@@ -13,13 +13,15 @@
       <span class="result__created">{{ createdNice }}</span>
       <div class="result__labels" v-if="labelsDefined">
         <span class="result__labels-title">Labels: </span>
-        <span
+        <a
           v-for="label in issueData.node.labels.nodes"
           :key="label.id"
           :style="{ borderColor: `#${label.color}` }"
+          href="#"
+          @click="clickLabel"
           class="result__label">
           {{ label.name }}
-        </span>
+        </a>
       </div>
     </div>
   </li>
@@ -95,7 +97,13 @@ export default {
     }
   },
 
-  methods: {}
+  methods: {
+    clickLabel(event) {
+      event.preventDefault();
+      const label = event.target.text.trim();
+      this.$emit('labelClicked', `label:${label}`);
+    }
+  }
 };
 </script>
 
@@ -183,5 +191,11 @@ export default {
     font-weight: 400;
     margin: 5px;
     padding: 3px 5px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .result__label:hover {
+    text-decoration: underline;
   }
 </style>
