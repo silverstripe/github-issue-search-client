@@ -31,6 +31,9 @@
           <li v-bind:class="{'tab': true, 'tab__active': (mode === '')}">
             <a class="tab--title" href="#" @click="setMode('')">All issues</a>
           </li>
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'bugs')}">
+            <a class="tab--title" href="#" @click="setMode('bugs')">Bugs</a>
+          </li>
           <li v-bind:class="{'tab': true, 'tab__active': (mode === 'ux')}">
             <a class="tab--title" title="User experience issues" href="#" @click="setMode('ux')">UX issues</a>
           </li>
@@ -106,6 +109,7 @@ export default {
         ux: 'label:type/ux',
         rfc: 'RFC', // search term
         easy: 'label:effort/easy',
+        bugs: 'label:type/bug',
       };
 
       return queryModes[this.mode] || '';
