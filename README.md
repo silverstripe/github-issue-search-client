@@ -59,7 +59,14 @@ npm run build
 
 ## Deploy
 
-The project is published to [Now](https://zeit.co/now). To do this you will need to have the Now CLI installed, be
+### Continuous deployment
+
+The project is published to [Now](https://zeit.co/now) automatically when changes are merged into the master branch.
+This is done via an automatic GitHub integration.
+
+### Manual deployment
+
+You can also deploy projects manually. To do this you will need to have the Now CLI installed, be
 logged in, part of the SilverStripe team, and have the team configured in your profile. For access to the team,
 contact internally.
 

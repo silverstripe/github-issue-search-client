@@ -125,11 +125,12 @@ export default {
       // TODO Pass this through main.js as props
       const ids = this.includeSupported ? supportedGroups : coreGroups;
 
-      return this.repoGroups
+      const repos = this.repoGroups
         .filter(repoGroup => ids.includes(repoGroup.id))
-        .reduce((repos, repoGroup) => repos.concat(repoGroup.repos), [])
-        .map(repo => `repo:${repo}`)
-        .join(' ');
+        .reduce((repos, repoGroup) => repos.concat(repoGroup.repos), []);
+      const uniqueRepos = [...new Set(repos)]; // filter out duplicates
+
+      return uniqueRepos.map(repo => `repo:${repo}`).join(' ');
     },
 
     /**

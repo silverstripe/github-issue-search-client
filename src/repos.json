@@ -127,7 +127,12 @@
       "symbiote/silverstripe-advancedworkflow",
       "symbiote/silverstripe-multivaluefield",
       "symbiote/silverstripe-queuedjobs",
-      "symbiote/silverstripe-versionedfiles"
+      "symbiote/silverstripe-versionedfiles",
+      "silverstripe/silverstripe-mfa",
+      "silverstripe/silverstripe-totp-authenticator",
+      "silverstripe/silverstripe-webauthn-authenticator",
+      "silverstripe/silverstripe-login-forms",
+      "silverstripe/silverstripe-security-extensions"
     ]
   },
   {
@@ -240,7 +245,12 @@
       "symbiote/silverstripe-advancedworkflow",
       "symbiote/silverstripe-multivaluefield",
       "symbiote/silverstripe-queuedjobs",
-      "symbiote/silverstripe-versionedfiles"
+      "symbiote/silverstripe-versionedfiles",
+      "silverstripe/silverstripe-mfa",
+      "silverstripe/silverstripe-totp-authenticator",
+      "silverstripe/silverstripe-webauthn-authenticator",
+      "silverstripe/silverstripe-login-forms",
+      "silverstripe/silverstripe-security-extensions"
     ]
   }
 ]

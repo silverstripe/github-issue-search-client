@@ -62,8 +62,9 @@ const coreProductTeamRepos = [
   'silverstripe/silverstripe-versioned',
   'silverstripe/silverstripe-versioned-admin',
   'silverstripe/vendor-plugin',
-  'silverstripe/webpack-config'
-]
+  'silverstripe/webpack-config',
+];
+
 request(URL, function (error, response, body) {
   const modules = JSON.parse(body);
   const repos = modules.filter(module => module.type === 'supported-module').map(module => module.github);
