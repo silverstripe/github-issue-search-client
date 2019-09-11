@@ -43,6 +43,9 @@
           <li v-bind:class="{'tab': true, 'tab__active': (mode === 'rfc')}">
             <a class="tab--title" title="Requests For Comments" href="#" @click="setMode('rfc')">RFCs</a>
           </li>
+          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'untriaged')}">
+            <a class="tab--title" href="#" @click="setMode('untriaged')">Untriaged</a>
+          </li>
         </ul>
       </form>
     </div>
@@ -110,6 +113,7 @@ export default {
         rfc: 'RFC', // search term
         easy: 'label:effort/easy',
         bugs: 'label:type/bug',
+        untriaged: 'is:open is:issue -label:Epic -label:type/docs -label:type/ux -label:type/bug -label:type/enhancement -label:effort/easy -label:effort/medium -label:effort/hard -label:impact/critical -label:impact/high -label:impact/medium -label:impact/low -label:rfc/draft -label:rfc/accepted',
       };
 
       return queryModes[this.mode] || '';
