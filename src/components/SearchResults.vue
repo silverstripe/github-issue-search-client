@@ -121,6 +121,7 @@ export default {
 
     repoQuery() {
       if (!this.repoGroups) {
+        // eslint-disable-next-line
         console.error('Repository groups were not defined!');
       }
 
