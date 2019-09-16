@@ -58,7 +58,7 @@
 
     <!-- Result -->
     <div v-else-if="allResults.edges.length > 0" class="results apollo">
-      <h3 class="results__title">Search results</h3>
+      <h3 class="results__title">Search results ({{totalCount}} issues found)</h3>
       <ul class="results__list">
         <SearchResult v-for="issue in allResults.edges" :key="issue.id" :issue-data="issue" />
       </ul>
