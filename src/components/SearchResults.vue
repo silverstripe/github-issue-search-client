@@ -21,10 +21,19 @@
               Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
             </span>
           </label>
+
           <select id="issue-status" v-model="issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
             <option value="open">Open issues</option>
             <option value="closed">Closed issues</option>
             <option value="all">Open and closed</option>
+          </select>
+
+          <select id="sort" v-model="sort" aria-label="Sort issues by" class="option-filter" @change="setIssueSort()">
+            <option value="">Best Match</option>
+            <option value="updated">Recently Updated</option>
+            <option value="updated-asc">Least Recently Updated</option>
+            <option value="created">Newest</option>
+            <option value="created-asc">Oldest</option>
           </select>
         </div>
         <ul class="tabs">
@@ -58,7 +67,7 @@
 
     <!-- Result -->
     <div v-else-if="allResults.edges.length > 0" class="results apollo">
-      <h3 class="results__title">Search results</h3>
+      <h3 class="results__title">Search results ({{totalCount}} issues found)</h3>
       <ul class="results__list">
         <SearchResult v-for="issue in allResults.edges" :key="issue.id" :issue-data="issue" />
       </ul>
@@ -94,6 +103,7 @@ export default {
       includeSupported: searchParams.get('supported') !== '0',
       productTeamMode: searchParams.get('product-team-mode') === '1',
       issueStatus: searchParams.get('status') || 'open',
+      sort: searchParams.get('sort') || '',
       loading: 0,
       totalCount: 0,
       allResults: [],
@@ -113,7 +123,7 @@ export default {
         rfc: 'RFC', // search term
         easy: 'label:effort/easy',
         bugs: 'label:type/bug',
-        untriaged: 'is:open is:issue -label:Epic -label:type/docs -label:type/ux -label:type/bug -label:type/enhancement -label:effort/easy -label:effort/medium -label:effort/hard -label:impact/critical -label:impact/high -label:impact/medium -label:impact/low -label:rfc/draft -label:rfc/accepted',
+        untriaged: 'is:open is:issue -label:Epic -label:type/docs -label:type/ux -label:type/bug -label:type/enhancement -label:effort/easy -label:effort/medium -label:effort/hard -label:impact/critical -label:impact/high -label:impact/medium -label:impact/low -label:rfc/draft -label:rfc/accepted -label:feedback-required/author',
       };
 
       return queryModes[this.mode] || '';
@@ -121,6 +131,7 @@ export default {
 
     repoQuery() {
       if (!this.repoGroups) {
+        // eslint-disable-next-line
         console.error('Repository groups were not defined!');
       }
 
@@ -139,6 +150,10 @@ export default {
       const uniqueRepos = [...new Set(repos)]; // filter out duplicates
 
       return uniqueRepos.map(repo => `repo:${repo}`).join(' ');
+    },
+
+    sortQuery() {
+        return this.sort ? `sort:${this.sort}` : '';
     },
 
     /**
@@ -162,6 +177,7 @@ export default {
           ${this.statusQuery}
           is:issue
           ${this.repoQuery}
+          ${this.sortQuery}
         `;
     },
 
@@ -190,6 +206,9 @@ export default {
     },
     setIssueStatus() {
       this.updateURLWithParam('status', this.issueStatus);
+    },
+    setIssueSort() {
+      this.updateURLWithParam('sort', this.sort);
     },
     getMoreResults() {
       this.$apollo.queries.allResults.fetchMore({
