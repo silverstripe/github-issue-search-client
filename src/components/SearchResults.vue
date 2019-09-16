@@ -21,10 +21,19 @@
               Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
             </span>
           </label>
+
           <select id="issue-status" v-model="issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
             <option value="open">Open issues</option>
             <option value="closed">Closed issues</option>
             <option value="all">Open and closed</option>
+          </select>
+
+          <select id="sort" v-model="sort" aria-label="Sort issues by" class="option-filter" @change="setIssueSort()">
+            <option value="">Best Match</option>
+            <option value="updated">Recently Updated</option>
+            <option value="updated-asc">Least Recently Updated</option>
+            <option value="created">Newest</option>
+            <option value="created-asc">Oldest</option>
           </select>
         </div>
         <ul class="tabs">
@@ -94,6 +103,7 @@ export default {
       includeSupported: searchParams.get('supported') !== '0',
       productTeamMode: searchParams.get('product-team-mode') === '1',
       issueStatus: searchParams.get('status') || 'open',
+      sort: searchParams.get('sort') || '',
       loading: 0,
       totalCount: 0,
       allResults: [],
@@ -142,6 +152,10 @@ export default {
       return uniqueRepos.map(repo => `repo:${repo}`).join(' ');
     },
 
+    sortQuery() {
+        return this.sort ? `sort:${this.sort}` : '';
+    },
+
     /**
      * Returns a query component for filtering issues by their open/closed status. Defaults to
      * only including open issues.
@@ -163,6 +177,7 @@ export default {
           ${this.statusQuery}
           is:issue
           ${this.repoQuery}
+          ${this.sortQuery}
         `;
     },
 
@@ -191,6 +206,9 @@ export default {
     },
     setIssueStatus() {
       this.updateURLWithParam('status', this.issueStatus);
+    },
+    setIssueSort() {
+      this.updateURLWithParam('sort', this.sort);
     },
     getMoreResults() {
       this.$apollo.queries.allResults.fetchMore({
