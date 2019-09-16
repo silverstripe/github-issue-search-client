@@ -113,7 +113,7 @@ export default {
         rfc: 'RFC', // search term
         easy: 'label:effort/easy',
         bugs: 'label:type/bug',
-        untriaged: 'is:open is:issue -label:Epic -label:type/docs -label:type/ux -label:type/bug -label:type/enhancement -label:effort/easy -label:effort/medium -label:effort/hard -label:impact/critical -label:impact/high -label:impact/medium -label:impact/low -label:rfc/draft -label:rfc/accepted',
+        untriaged: 'is:open is:issue -label:Epic -label:type/docs -label:type/ux -label:type/bug -label:type/enhancement -label:effort/easy -label:effort/medium -label:effort/hard -label:impact/critical -label:impact/high -label:impact/medium -label:impact/low -label:rfc/draft -label:rfc/accepted -label:feedback-required/author',
       };
 
       return queryModes[this.mode] || '';
