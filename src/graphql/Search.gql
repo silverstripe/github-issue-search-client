@@ -21,6 +21,25 @@ query($query:String!, $pageCursor:String) {
             }
           }
         }
+        ...on PullRequest {
+           id,
+          title,
+          url,
+          state,
+          createdAt,
+          repository {
+            id,
+            name,
+            url
+          },
+          labels(first:10) {
+            nodes {
+              id,
+              name,
+              color
+            }
+          }
+        }
       }
     }
     issueCount

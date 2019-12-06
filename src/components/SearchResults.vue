@@ -23,9 +23,15 @@
           </label>
 
           <select id="issue-status" v-model="issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
-            <option value="open">Open issues</option>
-            <option value="closed">Closed issues</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
             <option value="all">Open and closed</option>
+          </select>
+
+          <select id="issue-type" v-model="issueType" aria-label="Issue Type" class="option-filter" @change="setIssueType()">
+            <option value="issue">Issues</option>
+            <option value="pr">Pull requests</option>
+            <option value="all">Issues and PRs</option>
           </select>
 
           <select id="sort" v-model="sort" aria-label="Sort issues by" class="option-filter" @change="setIssueSort()">
@@ -103,6 +109,7 @@ export default {
       includeSupported: searchParams.get('supported') !== '0',
       productTeamMode: searchParams.get('product-team-mode') === '1',
       issueStatus: searchParams.get('status') || 'open',
+      issueType: searchParams.get('type') || 'issue',
       sort: searchParams.get('sort') || '',
       loading: 0,
       totalCount: 0,
@@ -170,12 +177,26 @@ export default {
       return queryParts[this.issueStatus] || queryParts.Open;
     },
 
+    /**
+     * Returns a query component for filtering issues by their issue/pr state. Defaults to
+     * only including open issues.
+     */
+    typeQuery() {
+      const queryParts = {
+        all: ' ',
+        issue: 'is:issue',
+        pr: 'is:pr',
+      };
+
+      return queryParts[this.issueType] || queryParts.issue;
+    },
+
     compositeQuery() {
       return `
           ${this.submitQuery}
           ${this.modeQuery}
           ${this.statusQuery}
-          is:issue
+          ${this.typeQuery}
           ${this.repoQuery}
           ${this.sortQuery}
         `;
@@ -206,6 +227,9 @@ export default {
     },
     setIssueStatus() {
       this.updateURLWithParam('status', this.issueStatus);
+    },
+    setIssueType() {
+      this.updateURLWithParam('status', this.issueType);
     },
     setIssueSort() {
       this.updateURLWithParam('sort', this.sort);
