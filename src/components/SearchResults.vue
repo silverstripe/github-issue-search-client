@@ -23,9 +23,14 @@
           </label>
 
           <select id="issue-status" v-model="issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
-            <option value="open">Open issues</option>
-            <option value="closed">Closed issues</option>
-            <option value="all">Open and closed</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+            <option value="all">Open or closed</option>
+          </select>
+
+          <select id="issue-type" v-model="issueType" aria-label="Issue Type" class="option-filter" @change="setIssueType()">
+            <option value="issue">Issues</option>
+            <option value="pr">Pull requests</option>
           </select>
 
           <select id="sort" v-model="sort" aria-label="Sort issues by" class="option-filter" @change="setIssueSort()">
@@ -67,7 +72,12 @@
 
     <!-- Result -->
     <div v-else-if="allResults.edges.length > 0" class="results apollo">
-      <h3 class="results__title">Search results ({{totalCount}} issues found)</h3>
+      <h3 class="results__title">
+        Search results (
+        {{totalCount}} 
+        {{issueType === 'pr' ? 'pull request' : 'issue'}}{{totalCount > 1 ? 's' : ''}}
+        found)
+      </h3>
       <ul class="results__list">
         <SearchResult v-for="issue in allResults.edges" :key="issue.id" :issue-data="issue" />
       </ul>
@@ -103,6 +113,7 @@ export default {
       includeSupported: searchParams.get('supported') !== '0',
       productTeamMode: searchParams.get('product-team-mode') === '1',
       issueStatus: searchParams.get('status') || 'open',
+      issueType: searchParams.get('type') || 'issue',
       sort: searchParams.get('sort') || '',
       loading: 0,
       totalCount: 0,
@@ -162,7 +173,6 @@ export default {
      */
     statusQuery() {
       const queryParts = {
-        all: ' ',
         open: 'is:open',
         closed: 'is:closed',
       };
@@ -170,12 +180,25 @@ export default {
       return queryParts[this.issueStatus] || queryParts.Open;
     },
 
+    /**
+     * Returns a query component for filtering issues by their issue/pr state. Defaults to
+     * only including open issues.
+     */
+    typeQuery() {
+      const queryParts = {
+        issue: 'is:issue',
+        pr: 'is:pr',
+      };
+
+      return queryParts[this.issueType] || queryParts.issue;
+    },
+
     compositeQuery() {
       return `
           ${this.submitQuery}
           ${this.modeQuery}
           ${this.statusQuery}
-          is:issue
+          ${this.typeQuery}
           ${this.repoQuery}
           ${this.sortQuery}
         `;
@@ -206,6 +229,9 @@ export default {
     },
     setIssueStatus() {
       this.updateURLWithParam('status', this.issueStatus);
+    },
+    setIssueType() {
+      this.updateURLWithParam('type', this.issueType);
     },
     setIssueSort() {
       this.updateURLWithParam('sort', this.sort);
