@@ -73,8 +73,8 @@
     <!-- Result -->
     <div v-else-if="allResults.edges.length > 0" class="results apollo">
       <h3 class="results__title">
-        Search results (
-        {{totalCount}} 
+        Search results
+        ({{totalCount}}
         {{issueType === 'pr' ? 'pull request' : 'issue'}}{{totalCount > 1 ? 's' : ''}}
         found)
       </h3>
