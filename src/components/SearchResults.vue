@@ -12,7 +12,10 @@
           <input type="submit" class="submit" @click.prevent="onClick" value="Search" />
         </div>
         <div class="options">
-          <label class="option-filter">
+          <span class="option-filter" v-if="customRepos.length">
+            Filtering by {{customRepos.length}} repos
+          </span>
+          <label class="option-filter" v-else>
             <input type="checkbox" id="supported-modules" v-model="includeSupported" @change="setSupportedModules()">
             <span v-if="productTeamMode">
               Only <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
@@ -73,8 +76,8 @@
     <!-- Result -->
     <div v-else-if="allResults.edges.length > 0" class="results apollo">
       <h3 class="results__title">
-        Search results (
-        {{totalCount}} 
+        Search results
+        ({{totalCount}}
         {{issueType === 'pr' ? 'pull request' : 'issue'}}{{totalCount > 1 ? 's' : ''}}
         found)
       </h3>
@@ -110,6 +113,7 @@ export default {
       query: searchParams.get('q') || '',
       submitQuery: searchParams.get('q') || '',
       mode: searchParams.get('mode') || '',
+      customRepos: searchParams.get('customRepos') ? searchParams.get('customRepos').split(',') : [],
       includeSupported: searchParams.get('supported') !== '0',
       productTeamMode: searchParams.get('product-team-mode') === '1',
       issueStatus: searchParams.get('status') || 'open',
@@ -155,9 +159,15 @@ export default {
       // TODO Pass this through main.js as props
       const ids = this.includeSupported ? supportedGroups : coreGroups;
 
-      const repos = this.repoGroups
-        .filter(repoGroup => ids.includes(repoGroup.id))
-        .reduce((repos, repoGroup) => repos.concat(repoGroup.repos), []);
+      const repos = this.customRepos.length ?
+        // Pass in custom list of repos through the URL.
+        // This allows repos which aren't in any repo group, so could technically  be used
+        // for topics other than Silverstripe modules.
+        this.customRepos :
+        // Or determine it based on the UI SELECTIONS
+        this.repoGroups
+          .filter(repoGroup => ids.includes(repoGroup.id))
+          .reduce((repos, repoGroup) => repos.concat(repoGroup.repos), []);
       const uniqueRepos = [...new Set(repos)]; // filter out duplicates
 
       return uniqueRepos.map(repo => `repo:${repo}`).join(' ');
@@ -327,7 +337,7 @@ export default {
   .form {
     background-color: #eef0f4;
     border-radius: 6px 6px 0 0;
-    color: #8F9FBA;
+    color: #43536D;
     font-family: "Helvetica Neue", sans-serif;
     margin-bottom: 40px;
     padding: 18px 20px 0 20px;
