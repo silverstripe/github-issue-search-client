@@ -107,3 +107,23 @@ the app can be run in a "team mode" through a URL parameter:
 `?product-team-mode=1`
 
 This will cause different repos to be included in the requests to Github.
+
+### Custom Repositories
+
+You can pass in a custom list of repositories via URL params:
+
+`?customRepos=silverstripe/silverstripe-framework,silverstripe/silverstripe-cms`
+
+This can be helpful to filter only to repos you're interested on in a specific project context,
+e.g. extracting them from your composer.lock file.
+
+Protip: You can generate these custom repos from your `composer.lock` file automatically
+through [Silverstripe Module Issue Browser Util](https://github.com/silverstripe/silverstripe-github-issue-search-composer-util).
+
+Assuming you've got your Composer binaries [set up globally](https://stackoverflow.com/questions/25373188/how-to-place-the-composer-vendor-bin-directory-in-your-path),
+the following will read from your lock file and open the issue browser:
+
+```
+composer global require silverstripe/github-issue-search-composer-util
+cat /my/project/composer.lock | github-issue-search | xargs open
+```
