@@ -337,7 +337,7 @@ export default {
   .form {
     background-color: #eef0f4;
     border-radius: 6px 6px 0 0;
-    color: #8F9FBA;
+    color: #43536D;
     font-family: "Helvetica Neue", sans-serif;
     margin-bottom: 40px;
     padding: 18px 20px 0 20px;
