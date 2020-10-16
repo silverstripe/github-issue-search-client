@@ -12,6 +12,8 @@ You can use it on https://silverstripe-github-issues.now.sh/.
 
 ![Preview](_img/preview.png)
 
+See [internal information asset overview](https://silverstripe.atlassian.net/wiki/spaces/PROD/pages/1493958687/Github+Issue+Tracker+Elvis) for details on access control, change management, deployments etc
+
 ## Install
 
 Use Node v8 or higher.
