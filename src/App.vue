@@ -17,6 +17,9 @@ export default {
   components: {
     SearchResults
   },
+  created() {
+    document.title = 'SilverStripe GitHub Issues';
+  }
 };
 </script>
 
