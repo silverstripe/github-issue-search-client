@@ -12,8 +12,6 @@ You can use it on https://silverstripe-github-issues.now.sh/.
 
 ![Preview](_img/preview.png)
 
-See [internal information asset overview](https://silverstripe.atlassian.net/wiki/spaces/PROD/pages/1493958687/Github+Issue+Tracker+Elvis) for details on access control, change management, deployments etc
-
 ## Install
 
 Use Node v8 or higher.
@@ -63,24 +61,24 @@ npm run build
 
 ### Continuous deployment
 
-The project is published to [Now](https://zeit.co/now) automatically when changes are merged into the master branch.
+The project is published to [Vercel](https://vercel.com) automatically when changes are merged into the master branch.
 This is done via an automatic GitHub integration.
 
 ### Manual deployment
 
-You can also deploy projects manually. To do this you will need to have the Now CLI installed, be
-logged in, part of the SilverStripe team, and have the team configured in your profile. For access to the team,
-contact internally.
+You can also deploy projects manually. To do this you will need to have the [Vercel CLI](https://vercel.com/cli) installed, be
+logged in, part of the ["silverstripeltd" Vercel team](https://vercel.com/teams/silverstripeltd/settings/members), 
+and have the team configured in your profile. For access to the team, contact Ingo or Garion.
 
 ```
 # Login if necessary
-now login
+vercel login
 
 # Switch to SilverStripe Ltd team
-now teams switch silverstripeltd
+vercel teams switch silverstripeltd
 
 # Ship it!
-now
+vercel
 ```
 
 It will give you an updated URL to run in your browser. This will also run automatically as a Git hook.
@@ -91,7 +89,7 @@ To store the GraphQL API token in an environment variable for Now, you need to u
 [secret](https://zeit.co/docs/v2/deployments/environment-variables-and-secrets#securing-environment-variables-using-secrets):
 
 ```
-now secret add graphql-api-key YOURAPITOKENHERE
+vercel secret add graphql-api-key YOURAPITOKENHERE
 ``` 
 
 The secret variable name `@graphql-api-key` is referenced from `now.json` to map to an environment variable.
