@@ -67,7 +67,7 @@ This is done via an automatic GitHub integration.
 ### Manual deployment
 
 You can also deploy projects manually. To do this you will need to have the [Vercel CLI](https://vercel.com/cli) installed, be
-logged in, part of the ["silverstripeltd" Vercel team](https://vercel.com/teams/silverstripeltd/settings/members), 
+logged in, part of the ["silverstripe" Vercel team](https://vercel.com/teams/silverstripe/settings/members), 
 and have the team configured in your profile. For access to the team, contact Ingo or Garion.
 
 ```
@@ -75,7 +75,7 @@ and have the team configured in your profile. For access to the team, contact In
 vercel login
 
 # Switch to SilverStripe Ltd team
-vercel teams switch silverstripeltd
+vercel teams switch silverstripe
 
 # Ship it!
 vercel
