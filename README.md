@@ -13,7 +13,7 @@ You can use it on https://silverstripe-github-issues.now.sh/.
 ![Preview](_img/preview.png)
 
 
-This project is powered by [Vercel](https://vercel.com).
+This project is powered by [Vercel](https://vercel.com/?utm_source=silverstripe&utm_campaign=oss).
 
 ![Vercel logo](_img/vercel-logotype-dark.png)
 ## Install
@@ -24,7 +24,7 @@ Use Node v8 or higher.
 npm install
 ```
 
-For deployment, you will need to [install Now](https://zeit.co/download) and log in.
+For deployment, you will need to [install Vercel](https://vercel.com/download/?utm_source=silverstripe&utm_campaign=oss) and log in.
 
 ## Configure
 
@@ -65,13 +65,13 @@ npm run build
 
 ### Continuous deployment
 
-The project is published to [Vercel](https://vercel.com) automatically when changes are merged into the master branch.
+The project is published to [Vercel](https://vercel.com/?utm_source=silverstripe&utm_campaign=oss) automatically when changes are merged into the master branch.
 This is done via an automatic GitHub integration.
 
 ### Manual deployment
 
-You can also deploy projects manually. To do this you will need to have the [Vercel CLI](https://vercel.com/cli) installed, be
-logged in, part of the ["silverstripe" Vercel team](https://vercel.com/teams/silverstripe/settings/members), 
+You can also deploy projects manually. To do this you will need to have the [Vercel CLI](https://vercel.com/cli/?utm_source=silverstripe&utm_campaign=oss) installed, be
+logged in, part of the ["silverstripe" Vercel team](https://vercel.com/teams/silverstripe/settings/members/?utm_source=silverstripe&utm_campaign=oss), 
 and have the team configured in your profile. For access to the team, contact Ingo or Garion.
 
 ```
@@ -90,7 +90,7 @@ It will give you an updated URL to run in your browser. This will also run autom
 ### API keys
 
 To store the GraphQL API token in an environment variable for Now, you need to use the CLI to save is as a
-[secret](https://zeit.co/docs/v2/deployments/environment-variables-and-secrets#securing-environment-variables-using-secrets):
+[secret](https://zeit.co/docs/v2/deployments/environment-variables-and-secrets/?utm_source=silverstripe&utm_campaign=oss#securing-environment-variables-using-secrets):
 
 ```
 vercel secret add graphql-api-key YOURAPITOKENHERE
