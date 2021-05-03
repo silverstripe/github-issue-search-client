@@ -12,6 +12,10 @@ You can use it on https://silverstripe-github-issues.now.sh/.
 
 ![Preview](_img/preview.png)
 
+
+This project is powered by [Vercel](https://vercel.com).
+
+![Vercel logo](_img/vercel-logotype-dark.png)
 ## Install
 
 Use Node v8 or higher.
