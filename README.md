@@ -131,3 +131,8 @@ the following will read from your lock file and open the issue browser:
 composer global require silverstripe/github-issue-search-composer-util
 cat /my/project/composer.lock | github-issue-search | xargs open
 ```
+
+### Analytics
+
+The default instance has [Google Analytics](https://analytics.google.com/analytics/web/#/report-home/a84547w88513614p192904949)
+set up under a Silverstripe owned account. Please contact maintainers if you'd like to have a look!
