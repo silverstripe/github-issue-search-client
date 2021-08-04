@@ -204,14 +204,14 @@ export default {
     },
 
     compositeQuery() {
-      return `
-          ${this.submitQuery}
-          ${this.modeQuery}
-          ${this.statusQuery}
-          ${this.typeQuery}
-          ${this.repoQuery}
-          ${this.sortQuery}
-        `;
+      return [
+        this.submitQuery,
+        this.modeQuery,
+        this.statusQuery,
+        this.typeQuery,
+        this.repoQuery,
+        this.sortQuery
+      ].join(' ');
     },
 
     showShowMore() {
