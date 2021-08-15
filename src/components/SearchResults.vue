@@ -1,71 +1,6 @@
 <template>
   <div class="apollo-example">
-    <!-- Cute tiny form -->
-    <div class="form">
-      <form>
-        <div class="searchbar">
-          <input
-            v-model="query"
-            placeholder="Search for issue"
-            class="input input__query"
-          >
-          <input type="submit" class="submit" @click.prevent="onClick" value="Search" />
-        </div>
-        <div class="options">
-          <span class="option-filter" v-if="customRepos.length">
-            Filtering by {{customRepos.length}} repos
-          </span>
-          <label class="option-filter" v-else>
-            <input type="checkbox" id="supported-modules" v-model="includeSupported" @change="setSupportedModules()">
-            <span v-if="productTeamMode">
-              Only <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
-            </span>
-            <span v-else>
-              Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
-            </span>
-          </label>
-
-          <select id="issue-status" v-model="issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
-            <option value="open">Open</option>
-            <option value="closed">Closed</option>
-            <option value="all">Open or closed</option>
-          </select>
-
-          <select id="issue-type" v-model="issueType" aria-label="Issue Type" class="option-filter" @change="setIssueType()">
-            <option value="issue">Issues</option>
-            <option value="pr">Pull requests</option>
-          </select>
-
-          <select id="sort" v-model="sort" aria-label="Sort issues by" class="option-filter" @change="setIssueSort()">
-            <option value="">Best Match</option>
-            <option value="updated">Recently Updated</option>
-            <option value="updated-asc">Least Recently Updated</option>
-            <option value="created">Newest</option>
-            <option value="created-asc">Oldest</option>
-          </select>
-        </div>
-        <ul class="tabs">
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === '')}">
-            <a class="tab--title" href="#" @click="setMode('')">All issues</a>
-          </li>
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'bugs')}">
-            <a class="tab--title" href="#" @click="setMode('bugs')">Bugs</a>
-          </li>
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'ux')}">
-            <a class="tab--title" title="User experience issues" href="#" @click="setMode('ux')">UX issues</a>
-          </li>
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'easy')}">
-            <a class="tab--title" href="#" @click="setMode('easy')">Good first issues</a>
-          </li>
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'rfc')}">
-            <a class="tab--title" title="Requests For Comments" href="#" @click="setMode('rfc')">RFCs</a>
-          </li>
-          <li v-bind:class="{'tab': true, 'tab__active': (mode === 'untriaged')}">
-            <a class="tab--title" href="#" @click="setMode('untriaged')">Untriaged</a>
-          </li>
-        </ul>
-      </form>
-    </div>
+    <SearchForm v-model="this.formData" @doSearch="setFormData" />
 
     <!-- Loading -->
     <div v-if="loading && !allResults.edges" class="btn loading apollo">Loading...</div>
@@ -74,11 +9,11 @@
     <div v-else-if="error" class="error apollo">An error occurred.</div>
 
     <!-- Result -->
-    <div v-else-if="allResults.edges.length > 0" class="results apollo">
+    <div v-else-if="['code', 'commits'].indexOf(formData.issueType) === -1 && allResults.edges.length > 0" class="results apollo">
       <h3 class="results__title">
         Search results
         ({{totalCount}}
-        {{issueType === 'pr' ? 'pull request' : 'issue'}}{{totalCount > 1 ? 's' : ''}}
+        {{formData.issueType === 'pr' ? 'pull request' : 'issue'}}{{totalCount > 1 ? 's' : ''}}
         found)
       </h3>
       <ul class="results__list">
@@ -100,6 +35,7 @@
 </template>
 
 <script>
+import SearchForm from "./SearchForm";
 import SearchResult from "./SearchResult";
 import SearchQuery from "../graphql/Search.gql";
 import 'url-search-params-polyfill';
@@ -107,28 +43,32 @@ import repoGroups from '../repos.json';
 
 export default {
   data() {
+
     const searchParams = this.getSearchParams();
 
     return {
-      query: searchParams.get('q') || '',
-      submitQuery: searchParams.get('q') || '',
-      mode: searchParams.get('mode') || '',
-      customRepos: searchParams.get('customRepos') ? searchParams.get('customRepos').split(',') : [],
-      includeSupported: searchParams.get('supported') !== '0',
-      productTeamMode: searchParams.get('product-team-mode') === '1',
-      issueStatus: searchParams.get('status') || 'open',
-      issueType: searchParams.get('type') || 'issue',
-      sort: searchParams.get('sort') || '',
+      formData: {
+        query: searchParams.get('query') || '',
+        mode: searchParams.get('mode') || '',
+        customRepos: searchParams.get('customRepos') ? searchParams.get('customRepos').split(',') : [],
+        includeSupported: searchParams.get('includeSupported') !== '0',
+        productTeamMode: searchParams.get('productTeamMode') === '1',
+        issueStatus: searchParams.get('issueStatus') || 'open',
+        issueType: searchParams.get('issueType') || 'issue',
+        sort: searchParams.get('sort') || '',
+      },
       loading: 0,
       totalCount: 0,
       allResults: [],
       error: null,
       repoGroups,
+      restResults: []
     };
   },
 
   components: {
-    SearchResult
+    SearchResult,
+    SearchForm
   },
 
   computed: {
@@ -141,7 +81,7 @@ export default {
         untriaged: 'is:open is:issue -label:Epic -label:type/docs -label:type/ux -label:type/bug -label:type/enhancement -label:effort/easy -label:effort/medium -label:effort/hard -label:impact/critical -label:impact/high -label:impact/medium -label:impact/low -label:rfc/draft -label:rfc/accepted -label:feedback-required/author',
       };
 
-      return queryModes[this.mode] || '';
+      return queryModes[this.formData.mode] || '';
     },
 
     repoQuery() {
@@ -153,17 +93,17 @@ export default {
       // See README for "product team mode" explanation.
       // Note that core issues are filtered out from supportedGroups in product team mode,
       // in order to avoid cross-team noise in issue workflows.
-      const coreGroups = this.productTeamMode ? ['core-product-team'] : ['core'];
-      const supportedGroups = this.productTeamMode ? ['supported-product-team'] : ['core', 'supported'];
+      const coreGroups = this.formData.productTeamMode ? ['core-product-team'] : ['core'];
+      const supportedGroups = this.formData.productTeamMode ? ['supported-product-team'] : ['core', 'supported'];
 
       // TODO Pass this through main.js as props
-      const ids = this.includeSupported ? supportedGroups : coreGroups;
+      const ids = this.formData.includeSupported ? supportedGroups : coreGroups;
 
-      const repos = this.customRepos.length ?
+      const repos = this.formData.customRepos.length ?
         // Pass in custom list of repos through the URL.
         // This allows repos which aren't in any repo group, so could technically  be used
         // for topics other than Silverstripe modules.
-        this.customRepos :
+        this.formData.customRepos :
         // Or determine it based on the UI SELECTIONS
         this.repoGroups
           .filter(repoGroup => ids.includes(repoGroup.id))
@@ -174,7 +114,7 @@ export default {
     },
 
     sortQuery() {
-        return this.sort ? `sort:${this.sort}` : '';
+        return this.formData.sort ? `sort:${this.formData.sort}` : '';
     },
 
     /**
@@ -187,7 +127,7 @@ export default {
         closed: 'is:closed',
       };
 
-      return queryParts[this.issueStatus] || queryParts.Open;
+      return queryParts[this.formData.issueStatus] || queryParts.open;
     },
 
     /**
@@ -200,12 +140,12 @@ export default {
         pr: 'is:pr',
       };
 
-      return queryParts[this.issueType] || queryParts.issue;
+      return queryParts[this.formData.issueType] || queryParts.issue;
     },
 
     compositeQuery() {
       return [
-        this.submitQuery,
+        this.formData.query,
         this.modeQuery,
         this.statusQuery,
         this.typeQuery,
@@ -220,35 +160,13 @@ export default {
   },
 
   methods: {
-    /**
-     * Form submission handler that will update the `submitQuery` state that
-     * the `<ApolloQuery>` component is watching to make the API requests.
-     *
-     * @return {void}
-     */
-    onClick() {
-      this.setQuery(this.query);
+    setFormData(formData) {
+      this.formData = formData
+      this.updateURLWithParam()
     },
     setQuery(query) {
-      this.query = query;
-      this.submitQuery = this.query;
-      this.updateURLWithParam('q', this.query);
-    },
-    setMode(mode) {
-      this.mode = mode;
-      this.updateURLWithParam('mode', this.mode);
-    },
-    setSupportedModules() {
-      this.updateURLWithParam('supported', this.includeSupported ? '1' : '0');
-    },
-    setIssueStatus() {
-      this.updateURLWithParam('status', this.issueStatus);
-    },
-    setIssueType() {
-      this.updateURLWithParam('type', this.issueType);
-    },
-    setIssueSort() {
-      this.updateURLWithParam('sort', this.sort);
+      this.formData.query = query
+      this.updateURLWithParam()
     },
     getMoreResults() {
       this.$apollo.queries.allResults.fetchMore({
@@ -279,17 +197,18 @@ export default {
     },
     /**
      * Update the current URL state to include entered filters and search queries
-     *
-     * @param {string} key
-     * @param {string} value
      */
-    updateURLWithParam(key, value) {
+    updateURLWithParam() {
       let searchParams = this.getSearchParams();
-      if (!value.length) {
-        searchParams.delete(key);
-      } else {
-        searchParams.set(key, value);
+      for (let key in this.formData) {
+        const value = this.formData[key];
+        if (value === undefined || !value.length) {
+          searchParams.delete(key);
+        } else {
+          searchParams.set(key, value);
+        }
       }
+
       window.history.replaceState({}, '', `${location.pathname}?${searchParams}`);
     }
   },
@@ -320,101 +239,13 @@ export default {
 </script>
 
 <style scoped>
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
 
-  label {
-    color: #43536D;
-  }
-
-  .form,
-  .input,
-  .submit,
-  .message,
-  .btn {
-    padding: 12px;
-  }
-
-  .form {
-    background-color: #eef0f4;
-    border-radius: 6px 6px 0 0;
-    color: #43536D;
-    font-family: "Helvetica Neue", sans-serif;
-    margin-bottom: 40px;
-    padding: 18px 20px 0 20px;
-  }
-
-  .searchbar {
-    background-color: white;
-    border: solid 1px #CED3D9;
-    border-radius: 3px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 3px;
-    width: 100%;
-  }
 
   .loading {
     background: #efefef;
     max-width: 100px;
     margin: 0 auto;
     text-align: center;
-  }
-
-  .input {
-    font-family: inherit;
-    font-size: inherit;
-  }
-
-  .input__query {
-    border: none;
-    flex-grow: 1;
-    font-size: 16px;
-    font-style: italic;
-    line-height: 20px;
-  }
-
-  .submit, .btn {
-    background-color: #0071C4;
-    border: 1px solid white;
-    border-radius: 3px;
-    color: white;
-    cursor: pointer;
-    flex-grow: 0;
-    font-size: 14px;
-    line-height: 20px;
-  }
-
-  button:disabled, .btn.loading {
-    background-color: #999;
-    cursor: wait;
-  }
-
-  .options {
-    margin: 10px 0;
-    font-size: 0.8em;
-  }
-
-  .tabs {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .tab {
-    padding: 15px;
-  }
-
-  .tab--title {
-    color: #43536D;
-    text-decoration: none;
-  }
-
-  .tab__active {
-    border-bottom: 5px solid #0171c4;
   }
 
   .error {
@@ -444,8 +275,5 @@ export default {
     text-align: center;
   }
 
-  .option-filter {
-    margin-right: 20px;
-  }
 
 </style>
