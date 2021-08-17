@@ -24,7 +24,7 @@ export default {
     return {
       loading: false,
       totalCount: 0,
-      allResults: [],
+      allResults: {},
       error: null,
       repoGroups,
     };

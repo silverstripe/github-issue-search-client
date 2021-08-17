@@ -1,19 +1,22 @@
 <template>
   <div class="apollo-example">
     <SearchForm v-model="this.formData" @doSearch="setFormData" />
-    <ApolloResults v-bind:formData="formData" v-bind:setQuery="setQuery" />
+    <component :is="resultsComponent" v-bind:formData="formData" v-bind:setQuery="setQuery" />
   </div>
 </template>
 
 <script>
 import SearchForm from "./SearchForm";
 import ApolloResults from "./ApolloResults";
+import RestResults from "./RestResults";
 import 'url-search-params-polyfill';
 
 export default {
   data() {
 
     const searchParams = this.getSearchParams();
+
+    const issueType = searchParams.get('issueType') || 'issue';
 
     return {
       formData: {
@@ -23,18 +26,21 @@ export default {
         includeSupported: searchParams.get('includeSupported') !== '0',
         productTeamMode: searchParams.get('productTeamMode') === '1',
         issueStatus: searchParams.get('issueStatus') || 'open',
-        issueType: searchParams.get('issueType') || 'issue',
+        issueType,
         sort: searchParams.get('sort') || '',
       }
     };
   },
 
   components: {
-    ApolloResults,
     SearchForm
   },
 
-  computed: { },
+  computed: {
+    resultsComponent() {
+      return ['pr', 'issue'].includes(this.formData.issueType) ? ApolloResults : RestResults;
+    }
+  },
 
   methods: {
     setFormData(formData) {
