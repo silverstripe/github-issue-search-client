@@ -4,9 +4,9 @@
     v-bind:results="allResults"
     v-bind:error="error"
     v-bind:totalCount="totalCount"
-    v-bind:searchType="this.formData.issueType === 'commits' ? 'commit' : 'file'"
-    v-bind:hasMore="false"
-    v-bind:getMoreResults="() => {}"
+    v-bind:searchType="formData.issueType === 'commits' ? 'commit' : 'file'"
+    v-bind:hasMore="hasMore"
+    v-bind:getMoreResults="nextPage"
     v-bind:setQuery="setQuery">
     <Commit v-for="entry in allResults" :key="entry.sha" :entry="entry" @labelClicked="setQuery" />
   </Results>
@@ -32,6 +32,8 @@ export default {
       error: null,
       repoGroups,
       octokit: null,
+      page: 1,
+      hasMore: false
     };
   },
 
@@ -81,10 +83,21 @@ export default {
   },
 
   methods: {
-    doSearch() {
-      this.loading = false;
+    initSearch() {
       this.totalCount = 0;
       this.allResults = [];
+      this.error = null;
+      this.page = 1;
+      this.doSearch()
+    },
+
+    nextPage() {
+      this.page++;
+      this.doSearch();
+    },
+
+    doSearch() {
+      this.loading = false;
       this.error = null;
 
       const {query} = this.formData;
@@ -93,20 +106,41 @@ export default {
       }
 
       this.loading = true;
-      this.octokit.rest.search.commits({q: `${query} ${this.repoQuery} merge:false`})
-        .then(this.process)
-        .catch(this.errorHandler)
+
+      const request = this.formData.issueType === 'commits' ? this.commitSearch(query) : this.codeSearch(query);
+      request.then(this.process).catch(this.errorHandler);
+    },
+
+    commitSearch(query) {
+      let sort = {};
+      if (this.formData.sort === 'created') {
+        sort = { sort: 'committer-date' };
+      } else if (this.formData.sort === 'created-asc') {
+        sort = { sort: 'committer-date',  order: 'asc'};
+      }
+
+      return this.octokit.rest.search.commits({
+        q: `${query} ${this.repoQuery} merge:false`,
+        ...sort,
+        page: this.page
+      })
+    },
+
+    codeSearch(query) {
+      return this.octokit.rest.search.code({
+        q: `${query} ${this.repoQuery}`,
+        page: this.page
+      })
     },
 
     process({data}) {
-      console.dir(data.items);
       this.totalCount = data.total_count;
-      this.allResults=data.items;
+      this.allResults = this.allResults.concat(data.items);
       this.loading = false;
+      this.hasMore = this.totalCount > this.allResults.length;
     },
 
     errorHandler(error) {
-      console.error(error);
       this.error = error;
       this.loading = false;
     }
@@ -114,7 +148,7 @@ export default {
 
   created() {
     this.octokit = new Octokit();
-    this.debounceSearch = debounce(this.doSearch, 500);
+    this.debounceSearch = debounce(this.initSearch, 500);
   },
 
   mounted() {

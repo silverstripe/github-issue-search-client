@@ -32,7 +32,7 @@
         <select id="issue-type" v-model="data.issueType" aria-label="Issue Type" class="option-filter" @change="setIssueType()">
           <option value="issue">Issues</option>
           <option value="pr">Pull requests</option>
-          <option value="code">Code</option>
+          <!--option value="code">Code</option-->
           <option value="commits">Commits</option>
         </select>
 

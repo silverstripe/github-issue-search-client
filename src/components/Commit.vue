@@ -10,7 +10,7 @@
         </span>
       </h3>
       <a :href="entry.repository.html_url" class="result__repository" target="_blank">{{ entry.repository.name }}</a>
-      <Committer :committer="entry.author" :date="entry.commit.author.date" />
+      <Committer v-if="entry.author" :committer="entry.author" :date="entry.commit.author.date" />
     </div>
   </li>
 </template>
@@ -33,10 +33,6 @@ export default {
     Committer
   },
 
-  computed: {
-
-  },
-
   methods: {
     clickLabel(event) {
       event.preventDefault();
@@ -44,9 +40,6 @@ export default {
       this.$emit('labelClicked', `label:${label}`);
     }
   },
-
-  mounted() {
-  }
 };
 </script>
 
@@ -89,14 +82,6 @@ export default {
     margin-left: 10px;
   }
 
-  .result__status--closed {
-    color: #6F84A7;
-  }
-
-  .result__status--open {
-    color: #007FAD;
-  }
-
   .result__title-link:hover {
     text-decoration: underline;
   }
@@ -112,10 +97,5 @@ export default {
 
   .result__repository:hover {
     text-decoration: underline;
-  }
-
-  .result__created {
-    display: inline-block;
-    font-size: 14px;
   }
 </style>
