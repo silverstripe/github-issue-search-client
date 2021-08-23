@@ -15,7 +15,7 @@
         found)
       </h3>
       <ul class="results__list">
-        <SearchResult v-for="entry in results" :key="entry.id" :issue-data="entry" @labelClicked="setQuery" />
+        <slot />
       </ul>
       <div class="results__footer">
         <p class="results__count">Showing {{results.length}} of {{totalCount}}</p>
@@ -33,8 +33,6 @@
 </template>
 
 <script>
-import SearchResult from "./SearchResult";
-
 export default {
   props: {
     loading: Boolean,
@@ -46,9 +44,7 @@ export default {
     getMoreResults: Function,
     setQuery: Function
   },
-  components: {
-    SearchResult
-  },
+  components: { },
 };
 </script>
 

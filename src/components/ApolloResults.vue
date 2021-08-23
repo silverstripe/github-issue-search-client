@@ -7,11 +7,15 @@
     v-bind:searchType="formData.issueType === 'pr' ? 'pull request' : 'issue'"
     v-bind:hasMore="showShowMore"
     v-bind:getMoreResults="getMoreResults"
-    v-bind:setQuery="setQuery" />
+    v-bind:setQuery="setQuery">
+    <Issue v-for="entry in (allResults.edges || [])" :key="entry.id" :issue-data="entry" @labelClicked="setQuery" />
+  </Results>
+
 </template>
 
 <script>
 import Results from "./Results";
+import Issue from "./Issue";
 import SearchQuery from "../graphql/Search.gql";
 import repoGroups from '../repos.json';
 
@@ -31,7 +35,8 @@ export default {
   },
 
   components: {
-    Results
+    Results,
+    Issue
   },
 
   computed: {
