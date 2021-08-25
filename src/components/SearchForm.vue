@@ -26,11 +26,11 @@
         <select id="issue-type" v-model="data.issueType" aria-label="Issue Type" class="option-filter" @change="setIssueType()">
           <option value="issue">Issues</option>
           <option value="pr">Pull requests</option>
-          <!--option value="code">Code</option-->
+          <option value="code">Code</option>
           <option value="commits">Commits</option>
         </select>
 
-        <select id="issue-status" v-model="data.issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
+        <select v-if="isIssueOrPr" id="issue-status" v-model="data.issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
           <option value="open">Open</option>
           <option value="closed">Closed</option>
           <option value="all">Open or closed</option>
@@ -38,13 +38,13 @@
 
         <select id="sort" v-model="data.sort" aria-label="Sort issues by" class="option-filter" @change="setIssueSort()">
           <option value="">Best Match</option>
-          <option value="updated">Recently Updated</option>
-          <option value="updated-asc">Least Recently Updated</option>
+          <option v-if="isIssueOrPr" value="updated">Recently Updated</option>
+          <option v-if="isIssueOrPr" value="updated-asc">Least Recently Updated</option>
           <option value="created">Newest</option>
           <option value="created-asc">Oldest</option>
         </select>
       </div>
-      <search-form-tabs :selected="data.mode" :tabs="tabs" @onChange="setMode" />
+      <search-form-tabs v-if="isIssueOrPr" :selected="data.mode" :tabs="tabs" @onChange="setMode" />
     </form>
   </div>
 </template>
@@ -52,6 +52,7 @@
 <script>
 import 'url-search-params-polyfill';
 import SearchFormTabs from "./SearchFormTabs.vue";
+import {isGraphqlType} from "../helpers";
 
 export default {
   props: {
@@ -65,19 +66,25 @@ export default {
   components: {
     SearchFormTabs
   },
-  created(){
+  created() {
+    this.data = this.value
+  },
+  updated() {
     this.data = this.value
   },
   computed: {
     tabs() {
       return [
-        {value: "", title: "", label: "All issues"},
-        {value: "bugs", title: "", label: "Bugs"},
+        {value: "", label: "All issues"},
+        {value: "bugs", label: "Bugs"},
         {value: "ux", title: "User experience issues", label: "UX issues"},
-        {value: "easy", title: "", label: "Good first issues"},
+        {value: "easy", label: "Good first issues"},
         {value: "rfc", title: "Requests For Comments", label: "RFCs"},
-        {value: "untriaged", title: "", label: "Untriaged"}
+        {value: "untriaged", label: "Untriaged"}
       ];
+    },
+    isIssueOrPr() {
+      return isGraphqlType(this.data.issueType);
     }
   },
   methods: {
@@ -104,7 +111,14 @@ export default {
     setIssueStatus() {
       this.doSearch();
     },
-    setIssueType() {
+    setIssueType(value) {
+      if (!isGraphqlType(value)) {
+        this.data.issueStatus = undefined;
+        this.data.mode = undefined;
+        if (['updated-asc', 'updated'].includes(this.data.sort)) {
+          this.data.sort = undefined;
+        }
+      }
       this.doSearch();
     },
     setIssueSort() {
@@ -182,6 +196,7 @@ export default {
 
   .options {
     margin: 10px 0;
+    padding-bottom: 15px;
     font-size: 0.8em;
   }
 

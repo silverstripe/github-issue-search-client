@@ -44,7 +44,17 @@ export default {
 
   methods: {
     setFormData(formData) {
-      this.formData = formData
+      this.formData = {
+        query: formData.query || '',
+        mode: formData.mode || '',
+        customRepos: formData.customRepos ? formData.customRepos : [],
+        includeSupported: formData.includeSupported !== '0',
+        productTeamMode: formData.productTeamMode === '1',
+        issueStatus: formData.issueStatus || 'open',
+        issueType: formData.issueType,
+        sort: formData.sort || '',
+      };
+
       this.updateURLWithParam()
     },
     setQuery(query) {

@@ -41,7 +41,7 @@ export default {
   }
 
   .tab {
-    padding: 15px;
+    padding: 0 15px 15px 15px;
   }
 
   .tab--title {
