@@ -6,6 +6,11 @@ query($query:String!, $pageCursor:String) {
           id,
           title,
           url,
+          author {
+            avatarUrl(size: 40),
+            login,
+            url
+          }
           state,
           createdAt,
           repository {
@@ -19,12 +24,24 @@ query($query:String!, $pageCursor:String) {
               name,
               color
             }
+          },
+          participants(first:11) {
+            nodes {
+              avatarUrl,
+              login,
+              url,
+            }
           }
         }
         ...on PullRequest {
-           id,
+          id,
           title,
           url,
+          author {
+            avatarUrl(size: 40),
+            login,
+            url
+          }
           state,
           createdAt,
           repository {
@@ -37,6 +54,13 @@ query($query:String!, $pageCursor:String) {
               id,
               name,
               color
+            }
+          },
+          participants(first:11) {
+            nodes {
+              avatarUrl,
+              login,
+              url,
             }
           }
         }

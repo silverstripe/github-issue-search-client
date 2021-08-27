@@ -1,54 +1,61 @@
 <template>
-  <li class="result">
-    <div class="result__inner" :class="`result__inner--${statusLower}`">
-      <h3 class="result__title">
-        <a :href="issueData.node.url" class="result__title-link" target="_blank">
-          {{ issueData.node.title }}
-        </a>
-        <span class="result__status" :class="`result__status--${statusLower}`">
-          {{ status }}
-        </span>
-      </h3>
-      <a :href="issueData.node.repository.url" class="result__repository" target="_blank">{{ issueData.node.repository.name }}</a>
-      <span class="result__created">{{ createdNice }}</span>
-      <div class="result__labels" v-if="labelsDefined">
-        <span class="result__labels-title">Labels: </span>
-        <a
-          v-for="label in issueData.node.labels.nodes"
-          :key="label.id"
-          :style="{ borderColor: `#${label.color}` }"
-          href="#"
-          @click="clickLabel"
-          class="result__label">
-          {{ label.name }}
-        </a>
-      </div>
+  <result-card
+    :title="issueData.node.title"
+    :url="issueData.node.url"
+    :subTitle="status"
+    :class="`issue issue--${statusLower}`">
+
+    <repo v-bind="issueData.node.repository" />
+
+    <div class="issue__labels" v-if="labelsDefined">
+      <span class="issue__labels-title">Labels: </span>
+      <a
+        v-for="label in issueData.node.labels.nodes"
+        :key="label.id"
+        :style="{ borderColor: `#${label.color}` }"
+        href="#"
+        @click="clickLabel"
+        class="issue__label">
+        {{ label.name }}
+      </a>
     </div>
-  </li>
+
+    <div class="issue__users">
+      <user class="issue__author" v-bind="issueData.node.author">
+        opened <AgoDate :date="issueData.node.createdAt" />
+      </user>
+
+      <div v-if="participants" class="issue_participants">
+        <ul class="issue_participants-list">
+          <li v-for="participant in participants" :key="participant.login" :entry="participant">
+            <user v-bind="participant" noLabel />
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </result-card>
 </template>
 
 <script>
-/**
- * Data mockup:
- *
- * createdAt: "2018-03-15T14:08:41Z",
- * id: "MDU6SXNzdWUzMDU1NjczNzU=",
- * labels: {
- *   nodes: [
- *     0: {id: "MDU6TGFiZWwzODYzMTYwNDE=", name: "affects/v4", color: "5319e7", __typename: "Label"},
- *     ...
- *   ],
- *   __typename: "LabelConnection"
- * },
- * state: "OPEN",
- * title: "[Recoverable Error] Argument 1 passed to SilverStripe\Config\MergeStrategy\Priority::mergeArray() must be of the type array",
- * url: "https://github.com/silverstripe/silverstripe-framework/issues/7938"
- */
+import ResultCard from './ResultCard.vue';
+import Repo from './Repo.vue';
+import AgoDate from "./AgoDate.vue"
+import User from "./User.vue";
+
 export default {
   props: {
     issueData: {
       type: Object
     }
+  },
+
+  components: {
+    ResultCard,
+    Repo,
+    AgoDate,
+    User
   },
 
   data() {
@@ -76,15 +83,10 @@ export default {
       return this.issueData.node.state.toLowerCase();
     },
 
-    /**
-     * Helper to format the ISO date to a nicer format.
-     *
-     * @return {String}
-     */
-    createdNice() {
-      const date = new Date(this.issueData.node.createdAt);
-
-      return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    participants() {
+      return this.issueData.node.participants.nodes.filter(
+        ({login}) => login !== this.issueData.node.author.login
+      );
     },
 
     /**
@@ -94,7 +96,7 @@ export default {
      */
     labelsDefined() {
       return this.issueData.node.labels.nodes.length > 0;
-    }
+    },
   },
 
   methods: {
@@ -107,58 +109,43 @@ export default {
 };
 </script>
 
-<style scoped>
-  .result {
-    border-bottom: 1px solid #E1E5ED;
-    margin-bottom: 25px;
-    padding-bottom: 25px;
-  }
-
-  .result__inner {
-    border-left-style: solid;
-    border-left-width: 5px;
-    padding-left: 25px;
-  }
-
-  .result__inner--closed {
+<style>
+  .issue--closed .result-card__inner {
     border-left-color: #566B8D;
   }
 
-  .result__inner--open {
+  .issue--open .result-card__inner {
     border-left-color: #29ABE2;
   }
 
-  .result__title {
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 10px;
-  }
-
-  .result__title-link {
-    color: #43536D;
-    text-decoration: none;
-  }
-
-  .result__status {
-    display: inline;
-    font-size: 15px;
-    font-weight: 400;
-    margin-left: 10px;
-  }
-
-  .result__status--closed {
+  .issue--closed .result-card__subtitle {
     color: #6F84A7;
   }
 
-  .result__status--open {
+  .issue--open .result-card__subtitle {
     color: #007FAD;
   }
 
-  .result__title-link:hover {
-    text-decoration: underline;
+  .issue__users {
+    display: flex;
+    margin-top: 20px
   }
 
-  .result__repository {
+  .issue__author {
+    width: 350px;
+  }
+
+  .issue_participants-list li {
+    display: inline-block;
+  }
+
+  .issue_participants-list img {
+    margin-left: -5px
+  }
+</style>
+
+<style scoped>
+  .issue__repository {
     color: #43536D;
     display: inline-block;
     font-size: 15px;
@@ -167,22 +154,22 @@ export default {
     text-decoration: none;
   }
 
-  .result__repository:hover {
+  .issue__repository:hover {
     text-decoration: underline;
   }
 
-  .result__created {
+  .issue__created {
     display: inline-block;
     font-size: 14px;
   }
 
-  .result__labels-title {
+  .issue__labels-title {
     display: inline-block;
     font-size: 15px;
     margin-right: 5px;
   }
 
-  .result__label {
+  .issue__label {
     border-radius: 3px;
     border-style: solid;
     border-width: 2px;
@@ -195,7 +182,7 @@ export default {
     text-decoration: none;
   }
 
-  .result__label:hover {
+  .issue__label:hover {
     text-decoration: underline;
   }
 </style>

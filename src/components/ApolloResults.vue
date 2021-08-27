@@ -167,7 +167,8 @@ export default {
       },
 
       result({ data }) {
-        this.totalCount = data.search.issueCount;
+
+        this.totalCount = data ? data.search.issueCount : 0;
       }
     }
   }
