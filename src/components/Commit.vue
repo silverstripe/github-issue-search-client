@@ -1,22 +1,18 @@
 <template>
-  <li class="result">
-    <div class="result__inner" :class="`result__inner--`">
-      <h3 class="result__title">
-        <a :href="entry.url" class="result__title-link" target="_blank">
-          {{ entry.commit.message }}
-        </a>
-        <span class="result__status" :title="entry.sha">
-          {{ entry.sha.slice(0,8) }}
-        </span>
-      </h3>
-      <a :href="entry.repository.html_url" class="result__repository" target="_blank">{{ entry.repository.name }}</a>
-      <Committer v-if="entry.author" :committer="entry.author" :date="entry.commit.author.date" />
-    </div>
-  </li>
+  <result-card :title="entry.commit.message" :url="entry.html_url" :subTitle="entry.sha.slice(0,8)" :subTitleTitle="entry.sha">
+    <repo v-bind="entry.repository" />
+    <user class="commit__user" v-if="entry.author" :url="entry.author.html_url" :login="entry.author.login" :avatarUrl="entry.author.avatar_url">
+      commited <AgoDate :date="entry.commit.author.date" />
+    </user>
+
+  </result-card>
 </template>
 
 <script>
-import Committer from './Committer.vue';
+import ResultCard from './ResultCard.vue';
+import Repo from './Repo.vue';
+import AgoDate from "./AgoDate.vue"
+import User from "./User.vue";
 
 export default {
   props: {
@@ -30,7 +26,10 @@ export default {
   },
 
   components: {
-    Committer
+    AgoDate,
+    ResultCard,
+    Repo,
+    User
   },
 
   methods: {
@@ -44,58 +43,7 @@ export default {
 </script>
 
 <style scoped>
-  .result {
-    border-bottom: 1px solid #E1E5ED;
-    margin-bottom: 25px;
-    padding-bottom: 25px;
-  }
-
-  .result__inner {
-    border-left-style: solid;
-    border-left-width: 5px;
-    padding-left: 25px;
-  }
-
-  .result__inner--closed {
-    border-left-color: #566B8D;
-  }
-
-  .result__inner--open {
-    border-left-color: #29ABE2;
-  }
-
-  .result__title {
-    font-size: 22px;
-    font-weight: 400;
-    margin-bottom: 10px;
-  }
-
-  .result__title-link {
-    color: #43536D;
-    text-decoration: none;
-  }
-
-  .result__status {
-    display: inline;
-    font-size: 15px;
-    font-weight: 400;
-    margin-left: 10px;
-  }
-
-  .result__title-link:hover {
-    text-decoration: underline;
-  }
-
-  .result__repository {
-    color: #43536D;
-    display: inline-block;
-    font-size: 15px;
-    margin-bottom: 20px;
-    margin-right: 10px;
-    text-decoration: none;
-  }
-
-  .result__repository:hover {
-    text-decoration: underline;
+  .commit__user {
+    display: block;
   }
 </style>

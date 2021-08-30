@@ -1,5 +1,5 @@
 <template>
-  <span class="commitDate" :title="date">{{ ago }}</span>
+  <span class="agoDate" :title="date">{{ ago }}</span>
 </template>
 
 <script>

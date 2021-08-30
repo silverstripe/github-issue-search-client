@@ -23,53 +23,36 @@
           </span>
         </label>
 
-        <select id="issue-status" v-model="data.issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
+        <select id="issue-type" v-model="data.issueType" aria-label="Issue Type" class="option-filter" @change="setIssueType()">
+          <option value="issue">Issues</option>
+          <option value="pr">Pull requests</option>
+          <option value="code">Code</option>
+          <option value="commits">Commits</option>
+        </select>
+
+        <select v-if="isIssueOrPr" id="issue-status" v-model="data.issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
           <option value="open">Open</option>
           <option value="closed">Closed</option>
           <option value="all">Open or closed</option>
         </select>
 
-        <select id="issue-type" v-model="data.issueType" aria-label="Issue Type" class="option-filter" @change="setIssueType()">
-          <option value="issue">Issues</option>
-          <option value="pr">Pull requests</option>
-          <!--option value="code">Code</option-->
-          <option value="commits">Commits</option>
-        </select>
-
         <select id="sort" v-model="data.sort" aria-label="Sort issues by" class="option-filter" @change="setIssueSort()">
           <option value="">Best Match</option>
-          <option value="updated">Recently Updated</option>
-          <option value="updated-asc">Least Recently Updated</option>
+          <option v-if="isIssueOrPr" value="updated">Recently Updated</option>
+          <option v-if="isIssueOrPr" value="updated-asc">Least Recently Updated</option>
           <option value="created">Newest</option>
           <option value="created-asc">Oldest</option>
         </select>
       </div>
-      <ul class="tabs">
-        <li v-bind:class="{'tab': true, 'tab__active': (data.mode === '')}">
-          <a class="tab--title" href="#" @click="setMode('')">All issues</a>
-        </li>
-        <li v-bind:class="{'tab': true, 'tab__active': (data.mode === 'bugs')}">
-          <a class="tab--title" href="#" @click="setMode('bugs')">Bugs</a>
-        </li>
-        <li v-bind:class="{'tab': true, 'tab__active': (data.mode === 'ux')}">
-          <a class="tab--title" title="User experience issues" href="#" @click="setMode('ux')">UX issues</a>
-        </li>
-        <li v-bind:class="{'tab': true, 'tab__active': (data.mode === 'easy')}">
-          <a class="tab--title" href="#" @click="setMode('easy')">Good first issues</a>
-        </li>
-        <li v-bind:class="{'tab': true, 'tab__active': (data.mode === 'rfc')}">
-          <a class="tab--title" title="Requests For Comments" href="#" @click="setMode('rfc')">RFCs</a>
-        </li>
-        <li v-bind:class="{'tab': true, 'tab__active': (data.mode === 'untriaged')}">
-          <a class="tab--title" href="#" @click="setMode('untriaged')">Untriaged</a>
-        </li>
-      </ul>
+      <search-form-tabs v-if="isIssueOrPr" :selected="data.mode" :tabs="tabs" @onChange="setMode" />
     </form>
   </div>
 </template>
 
 <script>
 import 'url-search-params-polyfill';
+import SearchFormTabs from "./SearchFormTabs.vue";
+import {isGraphqlType} from "../helpers";
 
 export default {
   props: {
@@ -80,10 +63,30 @@ export default {
       data: { }
     };
   },
-  created(){
+  components: {
+    SearchFormTabs
+  },
+  created() {
     this.data = this.value
   },
-  computed: {  },
+  updated() {
+    this.data = this.value
+  },
+  computed: {
+    tabs() {
+      return [
+        {value: "", label: "All issues"},
+        {value: "bugs", label: "Bugs"},
+        {value: "ux", title: "User experience issues", label: "UX issues"},
+        {value: "easy", label: "Good first issues"},
+        {value: "rfc", title: "Requests For Comments", label: "RFCs"},
+        {value: "untriaged", label: "Untriaged"}
+      ];
+    },
+    isIssueOrPr() {
+      return isGraphqlType(this.data.issueType);
+    }
+  },
   methods: {
     /**
      * Form submission handler that will update the `submitQuery` state that
@@ -108,7 +111,14 @@ export default {
     setIssueStatus() {
       this.doSearch();
     },
-    setIssueType() {
+    setIssueType(value) {
+      if (!isGraphqlType(value)) {
+        this.data.issueStatus = undefined;
+        this.data.mode = undefined;
+        if (['updated-asc', 'updated'].includes(this.data.sort)) {
+          this.data.sort = undefined;
+        }
+      }
       this.doSearch();
     },
     setIssueSort() {
@@ -123,12 +133,6 @@ export default {
 </script>
 
 <style scoped>
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
   label {
     color: #43536D;
   }
@@ -192,25 +196,8 @@ export default {
 
   .options {
     margin: 10px 0;
+    padding-bottom: 15px;
     font-size: 0.8em;
-  }
-
-  .tabs {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .tab {
-    padding: 15px;
-  }
-
-  .tab--title {
-    color: #43536D;
-    text-decoration: none;
-  }
-
-  .tab__active {
-    border-bottom: 5px solid #0171c4;
   }
 
   .option-filter {
