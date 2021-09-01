@@ -21,7 +21,7 @@
     </div>
 
     <div class="issue__users">
-      <user class="issue__author" v-bind="issueData.node.author">
+      <user v-if="issueData.node.author" class="issue__author" v-bind="issueData.node.author">
         opened <AgoDate :date="issueData.node.createdAt" />
       </user>
 
@@ -85,7 +85,7 @@ export default {
 
     participants() {
       return this.issueData.node.participants.nodes.filter(
-        ({login}) => login !== this.issueData.node.author.login
+        ({login}) => login !== this.issueData.node.author?.login
       );
     },
 
