@@ -43,6 +43,21 @@
           <option value="created">Newest</option>
           <option value="created-asc">Oldest</option>
         </select>
+
+        <select v-if="data.issueType === 'code'" id="code-in" v-model="data.codeIn" aria-label="Code in" class="option-filter" @change="doSearch()">
+          <option value="">File and path</option>
+          <option value="file">File</option>
+          <option value="path">Path</option>
+        </select>
+
+        <select v-if="data.issueType === 'code'" id="language" v-model="data.language" aria-label="Code language" class="option-filter" @change="doSearch()">
+          <option value="">Any</option>
+          <option value="php">PHP</option>
+          <option value="javascript">JavaScript</option>
+          <option value="css">CSS</option>
+          <option value="markdown">Markdown</option>
+          <option value="json">JSON</option>
+        </select>
       </div>
       <search-form-tabs v-if="isIssueOrPr" :selected="data.mode" :tabs="tabs" @onChange="setMode" />
     </form>

@@ -162,8 +162,18 @@ export default {
     },
 
     codeSearch(query) {
+      const fullQuery = [query, this.codeOrgQuery];
+      const {codeIn, language} = this.formData;
+      if (codeIn) {
+        fullQuery.push(`in:${codeIn}`);
+      }
+
+      if (language) {
+        fullQuery.push(`language:${language}`);
+      }
+
       return this.octokit.rest.search.code({
-        q: `${query} ${this.codeOrgQuery}`,
+        q: fullQuery.join(' '),
         page: this.page,
         headers: {
           Accept: 'application/vnd.github.v3.text-match+json'
