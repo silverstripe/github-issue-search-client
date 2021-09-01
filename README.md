@@ -8,7 +8,7 @@ a convenient issue browser across all of our
 
 It uses [vue-cli](https://github.com/vuejs/vue-cli/blob/dev/docs/cli.md)
 to simplify local development and production builds for VueJS.
-You can use it on https://silverstripe-github-issues.now.sh/.
+You can use it on https://github-issue-search-client-silverstripe.vercel.app.
 
 ![Preview](_img/preview.png)
 
