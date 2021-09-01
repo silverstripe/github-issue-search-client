@@ -1,5 +1,5 @@
 <template>
-  <result-card :title="entry.commit.message" :url="entry.html_url" :subTitle="entry.sha.slice(0,8)" :subTitleTitle="entry.sha">
+  <result-card :title="entry.commit ? entry.commit.message : ''" :url="entry.html_url" :subTitle="entry.sha.slice(0,8)" :subTitleTitle="entry.sha">
     <repo v-bind="entry.repository" />
     <user class="commit__user" v-if="entry.author" :url="entry.author.html_url" :login="entry.author.login" :avatarUrl="entry.author.avatar_url">
       commited <AgoDate :date="entry.commit.author.date" />

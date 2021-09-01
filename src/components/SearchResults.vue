@@ -28,6 +28,8 @@ export default {
         issueStatus: searchParams.get('issueStatus') || 'open',
         issueType,
         sort: searchParams.get('sort') || '',
+        codeIn: searchParams.get('codeIn') || '',
+        language: searchParams.get('language') || '',
       }
     };
   },
@@ -53,6 +55,8 @@ export default {
         issueStatus: formData.issueStatus || 'open',
         issueType: formData.issueType,
         sort: formData.sort || '',
+        codeIn: formData.codeIn || '',
+        language: formData.language || '',
       };
 
       this.updateURLWithParam()

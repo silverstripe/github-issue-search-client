@@ -167,7 +167,6 @@ export default {
       },
 
       result({ data }) {
-
         this.totalCount = data ? data.search.issueCount : 0;
       }
     }

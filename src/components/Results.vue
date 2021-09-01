@@ -1,7 +1,9 @@
 <template>
   <div class="">
     <!-- Loading -->
-    <div v-if="loading && !results" class="btn loading apollo">Loading...</div>
+    <div v-if="loading && ( !results || results.length === 0) " class="btn loading apollo">
+      <Loading size="50px" color="#0071C4" />
+    </div>
 
     <!-- Error -->
     <div v-else-if="error" class="error apollo">An error occurred.</div>
@@ -33,6 +35,9 @@
 </template>
 
 <script>
+
+import {ThreeDots as Loading} from 'vue-loading-spinner';
+
 export default {
   props: {
     loading: Boolean,
@@ -42,9 +47,11 @@ export default {
     searchType: String,
     hasMore: Boolean,
     getMoreResults: Function,
-    setQuery: Function
+    setQuery: Function,
   },
-  components: { },
+  components: {
+    Loading
+  }
 };
 </script>
 
@@ -52,7 +59,6 @@ export default {
 
 
   .loading {
-    background: #efefef;
     max-width: 100px;
     margin: 0 auto;
     text-align: center;
