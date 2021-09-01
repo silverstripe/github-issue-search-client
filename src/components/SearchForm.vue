@@ -51,7 +51,7 @@
         </select>
 
         <select v-if="data.issueType === 'code'" id="language" v-model="data.language" aria-label="Code language" class="option-filter" @change="doSearch()">
-          <option value="">Any</option>
+          <option value="">Any language</option>
           <option value="php">PHP</option>
           <option value="javascript">JavaScript</option>
           <option value="css">CSS</option>
