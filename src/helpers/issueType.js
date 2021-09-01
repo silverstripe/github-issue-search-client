@@ -6,7 +6,7 @@ export const graphqlTypes = ['issue', 'pr'];
 /**
  * These types will be search via the Rest API
  */
-export const restTypes = ['issue', 'pr'];
+export const restTypes = ['code', 'commits'];
 
 /**
  * Should the provided type be resolve with the GraphQL API
