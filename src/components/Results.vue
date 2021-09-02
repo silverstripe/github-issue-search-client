@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <!-- Loading -->
-    <div v-if="loading && ( !results || results.length === 0) " class="btn loading apollo">
+    <div v-if="loading" class="btn loading apollo">
       <vue-loaders name="ball-beat" color="#0071C4"></vue-loaders>
     </div>
 
