@@ -78,10 +78,12 @@ export default {
     updateURLWithParam() {
       let searchParams = this.getSearchParams();
       for (let key in this.formData) {
-        const value = this.formData[key];
-        if (value === undefined || !value.length) {
+        let value = this.formData[key];
+        // Leave out "=== false" check because that might be needed to override true defaults
+        if (value === undefined || value === '') {
           searchParams.delete(key);
         } else {
+          value = (typeof value === 'boolean') ? (value ? '1' : '0') : value;
           searchParams.set(key, value);
         }
       }
