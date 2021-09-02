@@ -1,6 +1,6 @@
 <template>
   <Results
-    v-bind:loading="loading"
+    v-bind:loading="$apollo.loading"
     v-bind:results="allResults.edges || []"
     v-bind:error="error"
     v-bind:totalCount="totalCount"
