@@ -3,6 +3,7 @@ import App from './App.vue'
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client/core'
 import { createApolloProvider } from '@vue/apollo-option'
 import { setContext } from '@apollo/client/link/context';
+import VueLoaders from 'vue-loaders';
 
 const authLink = setContext((_, { headers }) => {
   const token = process.env.VUE_APP_GRAPHQL_TOKEN;
@@ -36,4 +37,5 @@ const apolloProvider = createApolloProvider({
 
 const app = createApp(App)
 app.use(apolloProvider)
+app.use(VueLoaders)
 app.mount('#app')

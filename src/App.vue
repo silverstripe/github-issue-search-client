@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import 'vue-loaders/dist/vue-loaders.css';
 import SearchResults from "./components/SearchResults.vue";
 
 export default {

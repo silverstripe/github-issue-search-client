@@ -2,7 +2,7 @@
   <div class="">
     <!-- Loading -->
     <div v-if="loading && ( !results || results.length === 0) " class="btn loading apollo">
-      <Loading size="50px" color="#0071C4" />
+      <vue-loaders name="ball-beat" color="#0071C4"></vue-loaders>
     </div>
 
     <!-- Error -->
@@ -35,9 +35,6 @@
 </template>
 
 <script>
-
-import {ThreeDots as Loading} from 'vue-loading-spinner';
-
 export default {
   props: {
     loading: Boolean,
@@ -48,9 +45,6 @@ export default {
     hasMore: Boolean,
     getMoreResults: Function,
     setQuery: Function,
-  },
-  components: {
-    Loading
   }
 };
 </script>
