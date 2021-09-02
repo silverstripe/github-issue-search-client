@@ -14,20 +14,32 @@ import 'url-search-params-polyfill';
 export default {
   data() {
     const searchParams = this.getSearchParams();
-    const issueType = searchParams.get('issueType') || 'issue';
+    const defaults = {
+      query: '',
+      mode: '',
+      customRepos: [],
+      includeSupported: true,
+      productTeamMode: false,
+      issueStatus: 'open',
+      issueType: 'issue',
+      sort: '',
+      codeIn: '',
+      language: ''
+    };
 
     return {
+      defaults,
       formData: {
-        query: searchParams.get('query') || '',
-        mode: searchParams.get('mode') || '',
-        customRepos: searchParams.get('customRepos') ? searchParams.get('customRepos').split(',') : [],
+        query: searchParams.get('query') || defaults.query,
+        mode: searchParams.get('mode') || defaults.mode,
+        customRepos: searchParams.get('customRepos') ? searchParams.get('customRepos').split(',') : defaults.customRepos,
         includeSupported: searchParams.get('includeSupported') !== '0',
         productTeamMode: searchParams.get('productTeamMode') === '1',
-        issueStatus: searchParams.get('issueStatus') || 'open',
-        issueType,
-        sort: searchParams.get('sort') || '',
-        codeIn: searchParams.get('codeIn') || '',
-        language: searchParams.get('language') || '',
+        issueStatus: searchParams.get('issueStatus') || defaults.issueStatus,
+        issueType: searchParams.get('issueType') || defaults.issueType,
+        sort: searchParams.get('sort') || defaults.sort,
+        codeIn: searchParams.get('codeIn') || defaults.codeIn,
+        language: searchParams.get('language') || defaults.language,
       }
     };
   },
@@ -80,7 +92,7 @@ export default {
       for (let key in this.formData) {
         let value = this.formData[key];
         // Leave out "=== false" check because that might be needed to override true defaults
-        if (value === undefined || value === '') {
+        if (value === undefined || value === '' || value === this.defaults[key]) {
           searchParams.delete(key);
         } else {
           value = (typeof value === 'boolean') ? (value ? '1' : '0') : value;
