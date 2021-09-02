@@ -1,6 +1,6 @@
 <template>
   <div class="apollo-example">
-    <SearchForm v-model="this.formData" @doSearch="setFormData" />
+    <SearchForm v-model="formData" @doSearch="setFormData" />
     <component :is="resultsComponent" v-bind:formData="formData" v-bind:setQuery="setQuery" />
   </div>
 </template>
@@ -13,9 +13,7 @@ import 'url-search-params-polyfill';
 
 export default {
   data() {
-
     const searchParams = this.getSearchParams();
-
     const issueType = searchParams.get('issueType') || 'issue';
 
     return {
