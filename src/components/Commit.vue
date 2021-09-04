@@ -8,16 +8,18 @@
   </result-card>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 import ResultCard from './ResultCard.vue';
 import Repo from './Repo.vue';
 import AgoDate from "./AgoDate.vue"
 import User from "./User.vue";
 
-export default {
+export default defineComponent({
   props: {
     entry: {
-      type: Object
+      type: Object,
+      required: true
     }
   },
 
@@ -33,13 +35,14 @@ export default {
   },
 
   methods: {
-    clickLabel(event) {
+    clickLabel(event:Event) {
       event.preventDefault();
-      const label = event.target.text.trim();
+      const target = event.target as HTMLAnchorElement;
+      const label = target.text.trim();
       this.$emit('labelClicked', `label:${label}`);
     }
   },
-};
+});
 </script>
 
 <style scoped>

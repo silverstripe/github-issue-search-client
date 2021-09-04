@@ -8,30 +8,48 @@
     v-bind:hasMore="showShowMore"
     v-bind:getMoreResults="getMoreResults"
     v-bind:setQuery="setQuery">
-    <Issue v-for="entry in (allResults.edges || [])" :key="entry.id" :issue-data="entry" @labelClicked="setQuery" />
+    <Issue v-for="entry in (allResults.edges || [])" :key="entry?.node?.id" :issue-data="entry?.node" @labelClicked="setQuery" />
   </Results>
 
 </template>
 
-<script>
-import Results from "./Results";
-import Issue from "./Issue";
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
+import { SearchResultItemConnection } from "@octokit/graphql-schema";
+
+import Results from "./Results.vue";
+import Issue from "./Issue.vue";
 import SearchQuery from "../graphql/Search.gql";
+import { FormData, RepoGroups } from "../types";
 import repoGroups from '../repos.json';
 
-export default {
+type Data = {
+  loading: boolean,
+  totalCount: number,
+  allResults: SearchResultItemConnection,
+  error: Error | undefined,
+  repoGroups: RepoGroups,
+};
+
+export default defineComponent({
   props: {
-    formData: Object,
-    setQuery: Function
+    formData: {
+      type: Object as PropType<FormData>,
+      required: true
+    },
+    setQuery: {
+      type: Function,
+      required: true
+    }
   },
   data() {
     return {
       loading: false,
       totalCount: 0,
       allResults: {},
-      error: null,
+      error: undefined,
       repoGroups,
-    };
+    } as Data;
   },
 
   components: {
@@ -49,7 +67,7 @@ export default {
         untriaged: 'is:open is:issue -label:Epic -label:type/docs -label:type/ux -label:type/bug -label:type/enhancement -label:effort/easy -label:effort/medium -label:effort/hard -label:impact/critical -label:impact/high -label:impact/medium -label:impact/low -label:rfc/draft -label:rfc/accepted -label:feedback-required/author',
       };
 
-      return queryModes[this.formData.mode] || '';
+      return this.formData.mode ? queryModes[this.formData.mode] : '';
     },
 
     repoQuery() {
@@ -75,7 +93,7 @@ export default {
         // Or determine it based on the UI SELECTIONS
         this.repoGroups
           .filter(repoGroup => ids.includes(repoGroup.id))
-          .reduce((repos, repoGroup) => repos.concat(repoGroup.repos), []);
+          .reduce<string[]>((repos, repoGroup) => repos.concat(repoGroup.repos), []);
       const uniqueRepos = [...new Set(repos)]; // filter out duplicates
 
       return uniqueRepos.map(repo => `repo:${repo}`).join(' ');
@@ -93,6 +111,8 @@ export default {
       const queryParts = {
         open: 'is:open',
         closed: 'is:closed',
+        all: '',
+        '': ''
       };
 
       return queryParts[this.formData.issueStatus] || queryParts.open;
@@ -106,12 +126,15 @@ export default {
       const queryParts = {
         issue: 'is:issue',
         pr: 'is:pr',
+        code: '',
+        commits: '',
+        '': '',
       };
 
       return queryParts[this.formData.issueType] || queryParts.issue;
     },
 
-    compositeQuery() {
+    compositeQuery(): string {
       return [
         this.formData.query,
         this.modeQuery,
@@ -154,6 +177,8 @@ export default {
       query: SearchQuery,
       variables() {
         return {
+          // TODO I believe this is an issue with the VueJS Typescript integration
+          // @ts-ignore
           query: this.compositeQuery
         }
       },
@@ -171,7 +196,7 @@ export default {
       }
     }
   }
-};
+});
 </script>
 
 <style scoped>

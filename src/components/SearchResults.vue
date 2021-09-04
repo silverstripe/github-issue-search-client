@@ -5,16 +5,22 @@
   </div>
 </template>
 
-<script>
-import SearchForm from "./SearchForm";
-import ApolloResults from "./ApolloResults";
-import RestResults from "./RestResults";
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { FormData } from '@/types';
+import SearchForm from "./SearchForm.vue";
+import ApolloResults from "./ApolloResults.vue";
+import RestResults from "./RestResults.vue";
 import 'url-search-params-polyfill';
 
-export default {
+export default defineComponent({
+  props: {
+    // Fixes "Property 'formData' does not exist on type 'CreateComponentPublicInstance" - I don't know why :D
+    dummy: String
+  },
   data() {
     const searchParams = this.getSearchParams();
-    const defaults = {
+    const defaults: FormData = {
       query: '',
       mode: '',
       customRepos: [],
@@ -40,7 +46,7 @@ export default {
         sort: searchParams.get('sort') || defaults.sort,
         codeIn: searchParams.get('codeIn') || defaults.codeIn,
         language: searchParams.get('language') || defaults.language,
-      }
+      } as FormData
     };
   },
 
@@ -55,7 +61,7 @@ export default {
   },
 
   methods: {
-    setFormData(formData) {
+    setFormData(formData: FormData) {
       this.formData = {
         query: formData.query || '',
         mode: formData.mode || '',
@@ -71,7 +77,7 @@ export default {
 
       this.updateURLWithParam()
     },
-    setQuery(query) {
+    setQuery(query: string) {
       this.formData.query = query
       this.updateURLWithParam()
     },
@@ -90,9 +96,9 @@ export default {
     updateURLWithParam() {
       let searchParams = this.getSearchParams();
       for (let key in this.formData) {
-        let value = this.formData[key];
+        let value:any = this.formData[key as keyof FormData];
         // Leave out "=== false" check because that might be needed to override true defaults
-        if (value === undefined || value === '' || value === this.defaults[key]) {
+        if (value === undefined || value === '' || value === this.defaults[key as keyof FormData]) {
           searchParams.delete(key);
         } else {
           value = (typeof value === 'boolean') ? (value ? '1' : '0') : value;
@@ -103,7 +109,7 @@ export default {
       window.history.replaceState({}, '', `${location.pathname}?${searchParams}`);
     }
   },
-};
+});
 </script>
 
 <style scoped> </style>

@@ -2,13 +2,16 @@
   <span class="agoDate" :title="date">{{ ago }}</span>
 </template>
 
-<script>
-import RelativeTime from '@yaireo/relative-time'
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { formatRelative } from 'date-fns'
 
 
-export default {
+export default defineComponent({
   props: {
-    date: String
+    date: {
+      type: String
+    }
   },
 
   data() {
@@ -17,11 +20,10 @@ export default {
 
   computed: {
     ago() {
-      const relativeTime = new RelativeTime();
-      return relativeTime.from(new Date(this.date));
+      return this.date ? formatRelative(new Date(this.date), new Date()) : null;
     }
   },
-};
+});
 </script>
 
 <style scoped>

@@ -12,17 +12,44 @@
   </Results>
 </template>
 
-<script>
-import Results from "./Results";
-import Commit from "./Commit";
-import Code from "./Code";
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
+import { FormData, RepoGroups } from '@/types';
+import Results from "./Results.vue";
+import Commit from "./Commit.vue";
+import Code from "./Code.vue";
 import repoGroups from '../repos.json';
 import { Octokit } from "@octokit/rest";
+import {
+  GetResponseDataTypeFromEndpointMethod,
+} from "@octokit/types";
 import debounce from "lodash.debounce";
 
-export default {
+const octokit = new Octokit()
+type CommitSearchResponseDataType = GetResponseDataTypeFromEndpointMethod<
+  typeof octokit.rest.search.commits
+>;
+type CodeSearchResponseDataType = GetResponseDataTypeFromEndpointMethod<
+  typeof octokit.rest.search.code
+>;
+
+interface Data {
+  loading: boolean,
+  totalCount: number,
+  allResults: (CodeSearchResponseDataType['items'] | CommitSearchResponseDataType['items']),
+  error: Error | undefined
+  repoGroups: RepoGroups,
+  page: number,
+  hasMore: boolean,
+  debounceSearch: Function,
+}
+
+export default defineComponent({
   props: {
-    formData: Object,
+    formData: {
+      type: Object as PropType<FormData>,
+      required: true
+    },
     setQuery: Function
   },
   data() {
@@ -30,12 +57,12 @@ export default {
       loading: false,
       totalCount: 0,
       allResults: [],
-      error: null,
+      error: undefined,
       repoGroups,
-      octokit: null,
       page: 1,
-      hasMore: false
-    };
+      hasMore: false,
+      debounceSearch: () => {},
+    } as Data;
   },
 
   components: {
@@ -71,7 +98,7 @@ export default {
         // Or determine it based on the UI SELECTIONS
         this.repoGroups
           .filter(repoGroup => ids.includes(repoGroup.id))
-          .reduce((repos, repoGroup) => repos.concat(repoGroup.repos), []);
+          .reduce<string[]>((repos, repoGroup) => repos.concat(repoGroup.repos), []);
       const uniqueRepos = [...new Set(repos)]; // filter out duplicates
 
       return uniqueRepos.map(repo => `repo:${repo}`).join(' ');
@@ -100,7 +127,7 @@ export default {
         // Or determine it based on the UI SELECTIONS
         this.repoGroups
           .filter(repoGroup => ids.includes(repoGroup.id))
-          .reduce((repos, repoGroup) => repos.concat(repoGroup.repos), [])
+          .reduce<string[]>((repos, repoGroup) => repos.concat(repoGroup.repos), [])
           .map(repo => repo.replace(/\/.*/, ''));
       const uniqueOrgs = [...new Set(repos)]; // filter out duplicates
 
@@ -121,7 +148,7 @@ export default {
     initSearch() {
       this.totalCount = 0;
       this.allResults = [];
-      this.error = null;
+      this.error = undefined;
       this.page = 1;
       this.doSearch()
     },
@@ -131,9 +158,9 @@ export default {
       this.doSearch();
     },
 
-    doSearch() {
+    async doSearch() {
       this.loading = false;
-      this.error = null;
+      this.error = undefined;
 
       const {query} = this.formData;
       if (query.trim() === '') {
@@ -142,11 +169,15 @@ export default {
 
       this.loading = true;
 
-      const request = this.formData.issueType === 'commits' ? this.commitSearch(query) : this.codeSearch(query);
-      request.then(this.process).catch(this.errorHandler);
+      try {
+        const response = this.formData.issueType === 'commits' ? await this.commitSearch(query) : await this.codeSearch(query);
+        this.process(response);
+      } catch (error:any) {
+        this.errorHandler(error);
+      }
     },
 
-    commitSearch(query) {
+    async commitSearch(query: string) {
       let sort = {};
       if (this.formData.sort === 'created') {
         sort = { sort: 'committer-date' };
@@ -154,14 +185,14 @@ export default {
         sort = { sort: 'committer-date',  order: 'asc'};
       }
 
-      return this.octokit.rest.search.commits({
+      return octokit.rest.search.commits({
         q: `${query} ${this.repoQuery} merge:false`,
         ...sort,
         page: this.page
       })
     },
 
-    codeSearch(query) {
+    async codeSearch(query: string) {
       const fullQuery = [query, this.codeOrgQuery];
       const {codeIn, language} = this.formData;
       if (codeIn) {
@@ -172,7 +203,7 @@ export default {
         fullQuery.push(`language:${language}`);
       }
 
-      return this.octokit.rest.search.code({
+      return octokit.rest.search.code({
         q: fullQuery.join(' '),
         page: this.page,
         headers: {
@@ -181,28 +212,28 @@ export default {
       })
     },
 
-    process({data}) {
+    process({data}:{data: CommitSearchResponseDataType|CodeSearchResponseDataType}) {
       this.totalCount = data.total_count;
-      this.allResults = this.allResults.concat(data.items);
+      // TODO No idea what's going on here, the union of two array types should allow concat()
+      this.allResults = (this.allResults as []).concat(data.items as []);
       this.loading = false;
       this.hasMore = this.totalCount > this.allResults.length;
     },
 
-    errorHandler(error) {
+    errorHandler(error:Error) {
       this.error = error;
       this.loading = false;
     }
   },
 
   created() {
-    this.octokit = new Octokit();
     this.debounceSearch = debounce(this.initSearch, 500);
   },
 
   mounted() {
     this.debounceSearch();
   }
-};
+});
 </script>
 
 <style scoped>

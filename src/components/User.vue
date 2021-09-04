@@ -7,13 +7,17 @@
     <slot/>
   </div>
 </template>
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   props: {
     url: String,
     login: String,
-    avatarUrl: String,
+    avatarUrl: {
+      type: String,
+      required: true
+    },
     size: {
       type: Number,
       default: 20
@@ -31,12 +35,12 @@ export default {
   computed: {
     avatarUrlResized() {
       const url = new URL(this.avatarUrl);
-      url.searchParams.set('s', this.size * 2);
+      url.searchParams.set('s', String(this.size * 2));
       return url.href;
     }
   }
 
-};
+});
 </script>
 
 <style scoped>

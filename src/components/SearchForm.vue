@@ -23,7 +23,7 @@
           </span>
         </label>
 
-        <select id="issue-type" v-model="data.issueType" aria-label="Issue Type" class="option-filter" @change="setIssueType($event.target.value)">
+        <select id="issue-type" v-model="data.issueType" aria-label="Issue Type" class="option-filter" @change="handleIssueType">
           <option value="issue">Issues</option>
           <option value="pr">Pull requests</option>
           <option value="code">Code</option>
@@ -64,24 +64,27 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from 'vue'
 import 'url-search-params-polyfill';
 import SearchFormTabs from "./SearchFormTabs.vue";
+import { FormData, IssueType, Mode } from '@/types';
 import {isGraphqlType} from "../helpers";
 
-export default {
+export default defineComponent({
   props: {
     modelValue: {
-      type: Object,
+      type: Object as PropType<FormData>,
+      required: true,
     }
   },
   data() {
     return {
-      data: {}
+      data: {} as FormData
     };
   },
   emits: [
-    'update:modelValue',
+    'doSearch'
   ],
   components: {
     SearchFormTabs
@@ -108,33 +111,31 @@ export default {
     }
   },
   methods: {
-    setMode(mode) {
+    setMode(mode:Mode) {
       this.data.mode = mode;
       this.doSearch();
     },
     doSearch() {
       this.$emit('doSearch', this.data)
     },
-    setIssueType(issueType) {
+    handleIssueType(e:Event) {
+      const issueType:IssueType = (e.target as HTMLInputElement).value as IssueType;
       if (isGraphqlType(issueType)) {
-        this.value = {
-          ...this.value,
-          issueType
-        };
+        this.data.issueType = issueType;
       } else {
         const updateSort = (['updated-asc', 'updated'].includes(this.data.sort));
-        this.value = {
-          ...this.value,
+        this.data = {
+          ...this.data,
           issueType,
-          issueStatus: undefined,
-          mode: undefined,
-          sort: updateSort ? undefined : this.data.sort
+          issueStatus: '',
+          mode: '',
+          sort: updateSort ? '' : this.data.sort
         };
       }
       this.doSearch();
     }
   },
-};
+});
 </script>
 
 <style scoped>

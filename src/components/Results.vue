@@ -21,8 +21,8 @@
       </ul>
       <div class="results__footer">
         <p class="results__count">Showing {{results.length}} of {{totalCount}}</p>
-        <button v-if="hasMore" class="btn" v-bind:disabled="loading == 1" @click="getMoreResults">
-          <template v-if="loading == 0">Show More</template>
+        <button v-if="hasMore" class="btn" v-bind:disabled="loading" @click="handleMoreResults">
+          <template v-if="!loading">Show More</template>
           <template v-else>Loading More</template>
         </button>
       </div>
@@ -34,19 +34,34 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+export default defineComponent({
   props: {
     loading: Boolean,
-    results: Array,
+    results: {
+      type: Array,
+      required: true
+    },
     error: Object,
-    totalCount: Number,
+    totalCount: {
+      type: Number,
+      required: true
+    },
     searchType: String,
     hasMore: Boolean,
-    getMoreResults: Function,
+    getMoreResults: {
+      type: Function,
+      required: true
+    },
     setQuery: Function,
+  },
+  methods: {
+    handleMoreResults() {
+      this.getMoreResults();
+    }
   }
-};
+});
 </script>
 
 <style scoped>
