@@ -6,26 +6,37 @@
   </ul>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
+
+export type Tab = {
+  title?: string,
+  value: string,
+  label: string
+};
+
+export default defineComponent({
   props: {
     tabs: {
-      type: Array,
+      type: Array as PropType<Tab[]>,
       required: true
     },
     selected: String
   },
+  emits: [
+    'onChange'
+  ],
   data() {
     return {
       data: { }
     };
   },
   methods: {
-    onChange(value) {
+    onChange(value: string) {
       this.$emit('onChange', value);
     }
   },
-};
+});
 </script>
 
 <style scoped>

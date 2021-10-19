@@ -1,8 +1,8 @@
 <template>
   <div class="">
     <!-- Loading -->
-    <div v-if="loading && ( !results || results.length === 0) " class="btn loading apollo">
-      <Loading size="50px" color="#0071C4" />
+    <div v-if="loading" class="btn loading apollo">
+      <vue-loaders name="ball-beat" color="#0071C4"></vue-loaders>
     </div>
 
     <!-- Error -->
@@ -21,8 +21,8 @@
       </ul>
       <div class="results__footer">
         <p class="results__count">Showing {{results.length}} of {{totalCount}}</p>
-        <button v-if="hasMore" class="btn" v-bind:disabled="loading == 1" @click="getMoreResults">
-          <template v-if="loading == 0">Show More</template>
+        <button v-if="hasMore" class="btn" v-bind:disabled="loading" @click="handleMoreResults">
+          <template v-if="!loading">Show More</template>
           <template v-else>Loading More</template>
         </button>
       </div>
@@ -34,25 +34,34 @@
   </div>
 </template>
 
-<script>
-
-import {ThreeDots as Loading} from 'vue-loading-spinner';
-
-export default {
+<script lang="ts">
+import { defineComponent } from 'vue';
+export default defineComponent({
   props: {
     loading: Boolean,
-    results: Array,
+    results: {
+      type: Array,
+      required: true
+    },
     error: Object,
-    totalCount: Number,
+    totalCount: {
+      type: Number,
+      required: true
+    },
     searchType: String,
     hasMore: Boolean,
-    getMoreResults: Function,
+    getMoreResults: {
+      type: Function,
+      required: true
+    },
     setQuery: Function,
   },
-  components: {
-    Loading
+  methods: {
+    handleMoreResults() {
+      this.getMoreResults();
+    }
   }
-};
+});
 </script>
 
 <style scoped>

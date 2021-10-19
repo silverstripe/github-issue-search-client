@@ -1,16 +1,16 @@
 <template>
-  <a :href="html_url || url" class="repo" target="_blank">{{ name }}</a>
+  <a :href="url" class="repo" target="_blank">{{ name }}</a>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   props: {
-    html_url: String,
     url: String,
     name: String
   },
-};
+});
 </script>
 
 <style scoped>

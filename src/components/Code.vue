@@ -7,14 +7,16 @@
   </result-card>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 import ResultCard from './ResultCard.vue';
 import Repo from './Repo.vue';
 
-export default {
+export default defineComponent({
   props: {
     entry: {
-      type: Object
+      type: Object,
+      required: true
     }
   },
 
@@ -31,13 +33,13 @@ export default {
     fragments() {
       if (this.entry.text_matches) {
         return this.entry.text_matches
-          .filter(({property}) => property !== 'path')
-          .map( ({fragment}) => fragment).join("\n");
+          .filter(({property}: {property: string}) => property !== 'path')
+          .map( ({fragment}: {fragment: string}) => fragment).join("\n");
       }
       return '';
     }
   }
-};
+});
 </script>
 
 <style scoped>

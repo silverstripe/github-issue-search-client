@@ -19,10 +19,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
+import 'vue-loaders/dist/vue-loaders.css';
 import SearchResults from "./components/SearchResults.vue";
 
-export default {
+export default defineComponent({
   name: "app",
   components: {
     SearchResults
@@ -30,7 +32,7 @@ export default {
   created() {
     document.title = 'SilverStripe GitHub Issues';
   }
-};
+});
 </script>
 
 <style>

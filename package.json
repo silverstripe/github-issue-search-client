@@ -3,55 +3,61 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --open",
+    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "now-build": "node util/get-supported-module-env.js && npm run build",
+    "lint": "vue-cli-service lint",
     "get-repos": "node util/get-supported-module-env.js",
-    "lint": "vue-cli-service lint"
+    "now-build": "node util/get-supported-module-env.js && npm run build"
   },
   "dependencies": {
+    "@apollo/client": "^3.4.10",
     "@octokit/rest": "^18.9.1",
-    "@yaireo/relative-time": "^1.0.1",
-    "apollo-cache-inmemory": "^1.0.0",
-    "apollo-client": "^2.0.1",
-    "apollo-link": "^1.0.0",
-    "apollo-link-context": "^1.0.5",
-    "apollo-link-http": "^1.0.0",
-    "apollo-link-persisted-queries": "^0.1.0",
-    "apollo-link-ws": "^1.0.0",
-    "apollo-upload-client": "^7.0.0-alpha.4",
-    "apollo-utilities": "^1.0.1",
-    "axios": "^0.21.1",
-    "graphql": "^0.13.0",
+    "@vue/apollo-option": "^4.0.0-alpha.14",
+    "@vue/compat": "^3.2.6",
+    "core-js": "^3.6.5",
+    "date-fns": "^2.23.0",
     "lodash.debounce": "^4.0.8",
-    "luxon": "^2.0.2",
-    "request": "^2.88.0",
-    "subscriptions-transport-ws": "^0.9.5",
     "url-search-params-polyfill": "^5.0.0",
-    "vue": "^2.5.13",
-    "vue-apollo": "^3.0.0-alpha.1",
-    "vue-loading-spinner": "^1.0.11"
+    "vue": "^3.2",
+    "vue-apollo": "^3.0.0-beta.11",
+    "vue-loader": "^16",
+    "vue-loaders": "^4.1.4"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.0",
-    "@vue/cli-plugin-eslint": "^3.0.0",
-    "@vue/cli-service": "^3.0.0",
-    "eslint-plugin-graphql": "^1.5.0",
-    "graphql-tag": "^2.5.0",
-    "vue-cli-plugin-apollo": "^0.6.1",
-    "vue-template-compiler": "^2.5.13"
-  },
-  "babel": {
-    "presets": [
-      "@vue/app"
-    ]
+    "@octokit/graphql-schema": "^10.67.0",
+    "@octokit/types": "^6.26.0",
+    "@types/lodash": "^4.14.172",
+    "@types/lodash.debounce": "^4.0.6",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "@vue/cli-plugin-babel": "~4.5.13",
+    "@vue/cli-plugin-eslint": "~4.5.13",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-service": "~4.5.13",
+    "@vue/compiler-sfc": "^3.1.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-graphql": "^4",
+    "eslint-plugin-vue": "^7",
+    "request": "^2.88.0",
+    "typescript": "~4.1.5",
+    "vue-cli-plugin-apollo": "~0.22.2"
   },
   "eslintConfig": {
     "root": true,
+    "env": {
+      "node": true
+    },
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ]
+      "plugin:vue/vue3-essential",
+      "eslint:recommended",
+      "@vue/typescript"
+    ],
+    "parserOptions": {
+      "parser": "@typescript-eslint/parser"
+    },
+    "rules": {}
   },
   "postcss": {
     "plugins": {

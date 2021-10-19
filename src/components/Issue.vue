@@ -1,34 +1,37 @@
 <template>
   <result-card
-    :title="issueData.node.title"
-    :url="issueData.node.url"
+    :title="issueData.title"
+    :url="issueData.url"
     :subTitle="status"
     :class="`issue issue--${statusLower}`">
 
-    <repo v-bind="issueData.node.repository" />
+    <template v-if="issueData.repository">
+      <repo v-bind="issueData.repository" />
+    </template>
 
-    <div class="issue__labels" v-if="labelsDefined">
+    <div class="issue__labels" v-if="labelsDefined && issueData.labels">
       <span class="issue__labels-title">Labels: </span>
       <a
-        v-for="label in issueData.node.labels.nodes"
-        :key="label.id"
-        :style="{ borderColor: `#${label.color}` }"
+        v-for="label in issueData.labels.nodes"
+        :key="label?.id"
+        :style="{ borderColor: `#${label?.color}` }"
         href="#"
         @click="clickLabel"
         class="issue__label">
-        {{ label.name }}
+        {{ label?.name }}
       </a>
     </div>
 
     <div class="issue__users">
-      <user class="issue__author" v-bind="issueData.node.author">
-        opened <AgoDate :date="issueData.node.createdAt" />
+      <user v-if="issueData.author" class="issue__author" v-bind="issueData.author">
+        opened <AgoDate :date="issueData.createdAt" />
       </user>
 
       <div v-if="participants" class="issue_participants">
         <ul class="issue_participants-list">
-          <li v-for="participant in participants" :key="participant.login" :entry="participant">
-            <user v-bind="participant" noLabel />
+          <!-- This is a weird TS hack, Github's typing is Maybe<User> -->
+          <li v-for="participant in participants" :key="participant?.login" :entry="participant">
+            <user v-bind="participant" v-if="participant" noLabel />
           </li>
         </ul>
       </div>
@@ -38,16 +41,19 @@
   </result-card>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
+import { Issue, User as UserType } from "@octokit/graphql-schema";
 import ResultCard from './ResultCard.vue';
 import Repo from './Repo.vue';
 import AgoDate from "./AgoDate.vue"
 import User from "./User.vue";
 
-export default {
+export default defineComponent({
   props: {
     issueData: {
-      type: Object
+      type: Object as PropType<Issue>,
+      required: true
     }
   },
 
@@ -56,6 +62,12 @@ export default {
     Repo,
     AgoDate,
     User
+  },
+
+  emits: {
+    labelClicked(payload: string) {
+      return payload;
+    }
   },
 
   data() {
@@ -69,7 +81,7 @@ export default {
      * @return {String}
      */
     status() {
-      const state = this.issueData.node.state;
+      const state = this.issueData.state;
 
       return state.charAt(0) + state.slice(1).toLowerCase();
     },
@@ -80,12 +92,16 @@ export default {
      * @return {String}
      */
     statusLower() {
-      return this.issueData.node.state.toLowerCase();
+      return this.issueData.state.toLowerCase();
     },
 
     participants() {
-      return this.issueData.node.participants.nodes.filter(
-        ({login}) => login !== this.issueData.node.author.login
+      if (!this.issueData.participants || !this.issueData.participants.nodes || !this.issueData.author) {
+        return null;
+      }
+
+      return (this.issueData.participants.nodes as UserType[]).filter(
+        ({login}: {login: string}) => login !== this.issueData.author?.login
       );
     },
 
@@ -95,18 +111,19 @@ export default {
      * @return {Boolean}
      */
     labelsDefined() {
-      return this.issueData.node.labels.nodes.length > 0;
+      return (this.issueData.labels && this.issueData.labels.nodes) ? this.issueData.labels.nodes.length > 0 : 0;
     },
   },
 
   methods: {
-    clickLabel(event) {
+    clickLabel(event:Event) {
       event.preventDefault();
-      const label = event.target.text.trim();
+      const target = event.target as HTMLAnchorElement;
+      const label = target.text.trim();
       this.$emit('labelClicked', `label:${label}`);
     }
   }
-};
+});
 </script>
 
 <style>

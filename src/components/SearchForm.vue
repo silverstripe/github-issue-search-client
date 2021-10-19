@@ -7,14 +7,14 @@
           placeholder="Search for issue"
           class="input input__query"
         >
-        <input type="submit" class="submit" @click.prevent="onClick" value="Search" />
+        <input type="submit" class="submit" @click.prevent="doSearch()" value="Search" />
       </div>
       <div class="options">
         <span class="option-filter" v-if="data.customRepos.length">
           Filtering by {{data.customRepos.length}} repos
         </span>
         <label class="option-filter" v-else>
-          <input type="checkbox" id="supported-modules" v-model="data.includeSupported" @change="setSupportedModules()">
+          <input type="checkbox" id="supported-modules" v-model="data.includeSupported" @change="doSearch()" />
           <span v-if="data.productTeamMode">
             Only <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
           </span>
@@ -23,20 +23,20 @@
           </span>
         </label>
 
-        <select id="issue-type" v-model="data.issueType" aria-label="Issue Type" class="option-filter" @change="setIssueType()">
+        <select id="issue-type" v-model="data.issueType" aria-label="Issue Type" class="option-filter" @change="handleIssueType">
           <option value="issue">Issues</option>
           <option value="pr">Pull requests</option>
           <option value="code">Code</option>
           <option value="commits">Commits</option>
         </select>
 
-        <select v-if="isIssueOrPr" id="issue-status" v-model="data.issueStatus" aria-label="Issue status" class="option-filter" @change="setIssueStatus()">
+        <select v-if="isIssueOrPr" id="issue-status" v-model="data.issueStatus" aria-label="Issue status" class="option-filter" @change="doSearch()">
           <option value="open">Open</option>
           <option value="closed">Closed</option>
           <option value="all">Open or closed</option>
         </select>
 
-        <select id="sort" v-model="data.sort" aria-label="Sort issues by" class="option-filter" @change="setIssueSort()">
+        <select id="sort" v-model="data.sort" aria-label="Sort issues by" class="option-filter" @change="doSearch()">
           <option value="">Best Match</option>
           <option v-if="isIssueOrPr" value="updated">Recently Updated</option>
           <option v-if="isIssueOrPr" value="updated-asc">Least Recently Updated</option>
@@ -64,28 +64,36 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from 'vue'
 import 'url-search-params-polyfill';
 import SearchFormTabs from "./SearchFormTabs.vue";
+import { FormData, IssueType, Mode } from '@/types';
 import {isGraphqlType} from "../helpers";
 
-export default {
+export default defineComponent({
   props: {
-    value: {type: Object},
+    modelValue: {
+      type: Object as PropType<FormData>,
+      required: true,
+    }
   },
   data() {
     return {
-      data: { }
+      data: {} as FormData
     };
   },
+  emits: [
+    'doSearch'
+  ],
   components: {
     SearchFormTabs
   },
   created() {
-    this.data = this.value
+    this.data = this.modelValue
   },
   updated() {
-    this.data = this.value
+    this.data = this.modelValue
   },
   computed: {
     tabs() {
@@ -103,48 +111,31 @@ export default {
     }
   },
   methods: {
-    /**
-     * Form submission handler that will update the `submitQuery` state that
-     * the `<ApolloQuery>` component is watching to make the API requests.
-     *
-     * @return {void}
-     */
-    onClick() {
-      this.doSearch();
-    },
-    setQuery(query) {
-      this.data.query = query;
-      this.doSearch();
-    },
-    setMode(mode) {
+    setMode(mode:Mode) {
       this.data.mode = mode;
       this.doSearch();
     },
-    setSupportedModules() {
-      this.doSearch();
+    doSearch() {
+      this.$emit('doSearch', this.data)
     },
-    setIssueStatus() {
-      this.doSearch();
-    },
-    setIssueType(value) {
-      if (!isGraphqlType(value)) {
-        this.data.issueStatus = undefined;
-        this.data.mode = undefined;
-        if (['updated-asc', 'updated'].includes(this.data.sort)) {
-          this.data.sort = undefined;
-        }
+    handleIssueType(e:Event) {
+      const issueType:IssueType = (e.target as HTMLInputElement).value as IssueType;
+      if (isGraphqlType(issueType)) {
+        this.data.issueType = issueType;
+      } else {
+        const updateSort = (['updated-asc', 'updated'].includes(this.data.sort));
+        this.data = {
+          ...this.data,
+          issueType,
+          issueStatus: '',
+          mode: '',
+          sort: updateSort ? '' : this.data.sort
+        };
       }
       this.doSearch();
-    },
-    setIssueSort() {
-      this.doSearch();
-    },
-
-    doSearch() {
-      this.$emit('doSearch', this.data);
     }
   },
-};
+});
 </script>
 
 <style scoped>
