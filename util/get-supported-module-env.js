@@ -63,6 +63,7 @@ const coreProductTeamRepos = [
   'silverstripe/silverstripe-versioned-admin',
   'silverstripe/vendor-plugin',
   'silverstripe/webpack-config',
+  'silverstripe/developer-docs'
 ];
 
 request(URL, function (error, response, body) {
