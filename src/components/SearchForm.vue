@@ -1,7 +1,7 @@
 <template>
-  <div class="form">
+  <div class="form" :class="{ dark: isDark }">
     <form>
-      <div class="searchbar">
+      <div class="searchbar" :class="{ dark: isDark }">
         <input
           v-model="data.query"
           placeholder="Search for issue"
@@ -9,7 +9,7 @@
         >
         <input type="submit" class="submit" @click.prevent="doSearch()" value="Search" />
       </div>
-      <div class="options">
+      <div class="options" :class="{ dark: isDark }">
         <span class="option-filter" v-if="data.customRepos.length">
           Filtering by {{data.customRepos.length}} repos
         </span>
@@ -64,6 +64,12 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import { useDark } from '@vueuse/core';
+
+const isDark = useDark();
+</script>
+
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import 'url-search-params-polyfill';
@@ -76,7 +82,7 @@ export default defineComponent({
     modelValue: {
       type: Object as PropType<FormData>,
       required: true,
-    }
+    },
   },
   data() {
     return {
@@ -158,7 +164,12 @@ export default defineComponent({
     font-family: "Helvetica Neue", sans-serif;
     margin-bottom: 40px;
     padding: 18px 20px 0 20px;
+    &.dark {
+      background-color: inherit;
+      border: #eef0f4 1px solid;
+    }
   }
+
 
   .searchbar {
     background-color: white;
@@ -169,6 +180,9 @@ export default defineComponent({
     justify-content: space-between;
     padding: 3px;
     width: 100%;
+    &.dark {
+      background-color: inherit;
+    }
   }
 
   .input {
@@ -204,6 +218,10 @@ export default defineComponent({
     margin: 10px 0;
     padding-bottom: 15px;
     font-size: 0.8em;
+
+    &.dark > label {
+      color: #adbac7;
+    }
   }
 
   .option-filter {

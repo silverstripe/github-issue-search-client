@@ -13,6 +13,7 @@
     "@octokit/rest": "^20.0.2",
     "@vue/apollo-option": "^4.0.0-beta.9",
     "@vue/compat": "^3.2.6",
+    "@vueuse/core": "^10.4.1",
     "core-js": "^3.6.5",
     "date-fns": "^2.23.0",
     "graphql-tag": "^2.12.6",
@@ -21,7 +22,8 @@
     "vue": "^3.2",
     "vue-apollo": "^3.1.1",
     "vue-loader": "^17.2.2",
-    "vue-loaders": "^4.1.4"
+    "vue-loaders": "^4.1.4",
+    "vue-toggle-component": "^1.0.16"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.15",

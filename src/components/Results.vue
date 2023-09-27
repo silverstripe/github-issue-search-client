@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div :class="{ dark: isDark }">
     <!-- Loading -->
     <div v-if="loading" class="btn loading apollo">
       <vue-loaders name="ball-beat" color="#0071C4"></vue-loaders>
@@ -10,7 +10,7 @@
 
     <!-- Result -->
     <div v-else-if="results.length > 0" class="results apollo">
-      <h3 class="results__title">
+      <h3 class="results__title" :class="{ dark: isDark }">
         Search results
         ({{totalCount}}
         {{searchType}}{{totalCount > 1 ? 's' : ''}}
@@ -33,6 +33,13 @@
 
   </div>
 </template>
+
+
+<script setup lang="ts">
+import { useDark } from '@vueuse/core';
+
+const isDark = useDark();
+</script>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
@@ -83,6 +90,10 @@ export default defineComponent({
     font-size: 22px;
     margin-bottom: 20px;
     padding-bottom: 15px;
+
+    &.dark {
+      color: #adbac7 !important;
+    }
   }
 
   .results__list {

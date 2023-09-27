@@ -4,6 +4,7 @@
       <div class="logo">
         <img src="logo.png" class="logo--img" alt="Elvis Bug Tracker" />
       </div>
+      <DarkModeToggle/>
       <SearchResults/>
       <div class="sponsor-logo">
         <a href="https://vercel.com/?utm_source=silverstripe&amp;utm_campaign=oss">
@@ -23,12 +24,14 @@
 import { defineComponent } from 'vue';
 import 'vue-loaders/dist/vue-loaders.css';
 import SearchResults from "./components/SearchResults.vue";
+import DarkModeToggle from './components/DarkModeToggle.vue';
 
 export default defineComponent({
   name: "app",
   components: {
+    DarkModeToggle,
     SearchResults
-  },
+},
   created() {
     document.title = 'SilverStripe GitHub Issues';
   }
@@ -36,6 +39,14 @@ export default defineComponent({
 </script>
 
 <style>
+  html.dark {
+    color-scheme: dark;
+  }
+
+  .dark {
+    color: #adbac7;
+  }
+
   #app {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
