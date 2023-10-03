@@ -19,7 +19,7 @@ import { SearchResultItemConnection } from "@octokit/graphql-schema";
 
 import Results from "./Results.vue";
 import Issue from "./Issue.vue";
-import SearchQuery from "../graphql/Search.gql";
+import SearchQuery from "../graphql/Search.js";
 import { FormData, RepoGroups } from "../types";
 import repoGroups from '../repos.json';
 
