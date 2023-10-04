@@ -1,4 +1,6 @@
-query($query:String!, $pageCursor:String) {
+import gql from 'graphql-tag';
+
+export default gql`query($query:String!, $pageCursor:String) {
   search(query:$query, type:ISSUE, first:15, after:$pageCursor) {
     edges {
       node {
@@ -72,4 +74,4 @@ query($query:String!, $pageCursor:String) {
       hasNextPage
     }
   }
-}
+}`;

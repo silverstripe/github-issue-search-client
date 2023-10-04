@@ -1,6 +1,8 @@
-const request = require('request');
 const fs = require('fs');
 const path = require('path');
+// Can't use import directly because this isn't a module, and can't use require because node-fetch doesn't support that
+// See https://stackoverflow.com/a/75281896/10936596
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const URL = 'https://raw.githubusercontent.com/silverstripe/supported-modules/gh-pages/modules.json';
 
@@ -66,8 +68,8 @@ const coreProductTeamRepos = [
   'silverstripe/developer-docs'
 ];
 
-request(URL, function (error, response, body) {
-  const modules = JSON.parse(body);
+fetch(URL).then((response) => {
+  response.json().then((modules) => {
   const repos = modules.filter(module => module.type === 'supported-module').map(module => module.github);
   const out = [
     {
@@ -94,10 +96,11 @@ request(URL, function (error, response, body) {
     }
   ];
 
-  fs.writeFile(path.join(__dirname, '../src/') + '/repos.json', JSON.stringify(out, null, 2), function(err, data) {
+  fs.writeFile(path.join(__dirname, '../src/') + '/repos.json', JSON.stringify(out, null, 2), function(err) {
     if (err) {
-      return console.log(error);
+      return console.log(err);
     }
     console.log('Successfully written to file "src/repos.json"');
+  });
   });
 });

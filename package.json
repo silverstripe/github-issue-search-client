@@ -1,6 +1,5 @@
 {
   "name": "github-issue-search-client",
-  "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,38 +10,38 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.10",
-    "@octokit/rest": "^18.9.1",
-    "@vue/apollo-option": "^4.0.0-alpha.14",
+    "@octokit/rest": "^20.0.2",
+    "@vue/apollo-option": "^4.0.0-beta.9",
     "@vue/compat": "^3.2.6",
     "core-js": "^3.6.5",
     "date-fns": "^2.23.0",
+    "graphql-tag": "^2.12.6",
     "lodash.debounce": "^4.0.8",
-    "url-search-params-polyfill": "^5.0.0",
+    "url-search-params-polyfill": "^8.2.5",
     "vue": "^3.2",
-    "vue-apollo": "^3.0.0-beta.11",
-    "vue-loader": "^16",
+    "vue-apollo": "^3.1.1",
+    "vue-loader": "^17.2.2",
     "vue-loaders": "^4.1.4"
   },
   "devDependencies": {
-    "@octokit/graphql-schema": "^10.67.0",
-    "@octokit/types": "^6.26.0",
+    "@babel/eslint-parser": "^7.22.15",
+    "@graphql-eslint/eslint-plugin": "3.20.1",
+    "@octokit/graphql-schema": "^14.33.0",
+    "@octokit/types": "^12.0.0",
     "@types/lodash": "^4.14.172",
     "@types/lodash.debounce": "^4.0.6",
-    "@typescript-eslint/eslint-plugin": "^4.18.0",
-    "@typescript-eslint/parser": "^4.18.0",
-    "@vue/cli-plugin-babel": "~4.5.13",
-    "@vue/cli-plugin-eslint": "~4.5.13",
-    "@vue/cli-plugin-typescript": "~4.5.0",
-    "@vue/cli-service": "~4.5.13",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-plugin-typescript": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
     "@vue/compiler-sfc": "^3.1.0",
-    "@vue/eslint-config-typescript": "^7.0.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-graphql": "^4",
-    "eslint-plugin-vue": "^7",
-    "request": "^2.88.0",
-    "typescript": "~4.1.5",
-    "vue-cli-plugin-apollo": "~0.22.2"
+    "@vue/eslint-config-typescript": "^12.0.0",
+    "eslint": "^8.50.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "node-fetch": "^3.3.2",
+    "typescript": "^5.2.2"
   },
   "eslintConfig": {
     "root": true,
@@ -57,7 +56,9 @@
     "parserOptions": {
       "parser": "@typescript-eslint/parser"
     },
-    "rules": {}
+    "rules": {
+      "vue/multi-word-component-names": "off"
+    }
   },
   "postcss": {
     "plugins": {

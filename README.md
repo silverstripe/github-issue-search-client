@@ -31,7 +31,7 @@ For deployment, you will need to [install Vercel](https://vercel.com/download/?u
 Create an `.env` with:
 
 ```
-VUE_APP_GRAPHQL_ENDPOINT=https://api.github.com
+VUE_APP_GRAPHQL_ENDPOINT=https://api.github.com/graphql
 VUE_APP_GRAPHQL_TOKEN=<token>
 ```
 
