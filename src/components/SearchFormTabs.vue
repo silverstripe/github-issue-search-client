@@ -1,18 +1,25 @@
 <template>
   <ul class="tabs">
     <li v-for="tab in tabs" :key="tab.value" v-bind:class="{'tab': true, 'tab__active': (selected === tab.value)}">
-      <a class="tab--title" href="#" @click="onChange(tab.value)" :title="tab.title">{{ tab.label }}</a>
+      <a class="tab--title" :class="{ dark: isDark }" href="#" @click="onChange(tab.value)" :title="tab.title">{{ tab.label }}</a>
     </li>
   </ul>
 </template>
 
+<script setup lang="ts">
+import { useDark } from '@vueuse/core';
+
+const isDark = useDark();
+</script>
+
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
+
 
 export type Tab = {
   title?: string,
   value: string,
-  label: string
+  label: string,
 };
 
 export default defineComponent({
@@ -21,7 +28,7 @@ export default defineComponent({
       type: Array as PropType<Tab[]>,
       required: true
     },
-    selected: String
+    selected: String,
   },
   emits: [
     'onChange'
@@ -58,6 +65,10 @@ export default defineComponent({
   .tab--title {
     color: #43536D;
     text-decoration: none;
+
+    &.dark {
+      color: #adbac7;
+    }
   }
 
   .tab__active {

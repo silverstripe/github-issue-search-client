@@ -1,8 +1,8 @@
 <template>
   <li class="result-card">
     <div class="result-card__inner">
-      <h3 class="result-card__title">
-        <a :href="url" class="result-card__title-link" target="_blank">
+      <h3 class="result-card__title" :class="{ dark: isDark }">
+        <a :href="url" class="result-card__title-link" :class="{ dark: isDark }" target="_blank">
           {{ title }}
         </a>
         <span class="result-card__subtitle" :title="subTitleTitle">
@@ -13,6 +13,12 @@
     </div>
   </li>
 </template>
+
+<script setup lang="ts">
+import { useDark } from '@vueuse/core';
+
+const isDark = useDark();
+</script>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
@@ -63,6 +69,9 @@ export default defineComponent({
   .result-card__title-link {
     color: #43536D;
     text-decoration: none;
+    &.dark {
+      color: #adbac7 !important;
+    }
   }
 
   .result-card__subtitle {
@@ -70,6 +79,9 @@ export default defineComponent({
     font-size: 15px;
     font-weight: 400;
     margin-left: 10px;
+    &.dark {
+      color: white !important;
+    }
   }
 
   .result-card__title-link:hover {
