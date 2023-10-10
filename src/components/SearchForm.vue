@@ -15,10 +15,7 @@
         </span>
         <label class="option-filter" v-else>
           <input type="checkbox" id="supported-modules" v-model="data.includeSupported" @change="doSearch()" />
-          <span v-if="data.productTeamMode">
-            Only <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
-          </span>
-          <span v-else>
+          <span>
             Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
           </span>
         </label>

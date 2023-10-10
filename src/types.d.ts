@@ -14,7 +14,6 @@ export type FormData = {
   mode: Mode,
   customRepos: string[],
   includeSupported: boolean,
-  productTeamMode: boolean,
   issueStatus: IssueStatus,
   issueType: IssueType,
   sort: Sort,

@@ -4,95 +4,82 @@ const path = require('path');
 // See https://stackoverflow.com/a/75281896/10936596
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-const URL = 'https://raw.githubusercontent.com/silverstripe/supported-modules/gh-pages/modules.json';
+/**
+ * Gets information for any "supported-module" repositories.
+ */
+async function getRelevantModules(jsonUrl, foundModules) {
+  const response = await fetch(jsonUrl);
+  const currentModules = await response.json();
+  // Only list supported-module, since the CMS 4 list includes some things we don't control or care about with other types.
+  const relevant = currentModules.filter(module => module.type === 'supported-module');
+  for (const module of relevant) {
+    foundModules[module.github] = module;
+  }
+}
 
-// Modules which are part of the default download
-const coreRepos = [
-  'silverstripe/recipe-cms',
-  'silverstripe/recipe-core',
-  'silverstripe/recipe-plugin',
-  'silverstripe/silverstripe-admin',
-  'silverstripe/silverstripe-asset-admin',
-  'silverstripe/silverstripe-assets',
-  'silverstripe/silverstripe-campaign-admin',
-  'silverstripe/silverstripe-cms',
-  'silverstripe/silverstripe-config',
-  'silverstripe/silverstripe-errorpage',
-  'silverstripe/silverstripe-framework',
-  'silverstripe/silverstripe-graphql',
-  'silverstripe/silverstripe-installer',
-  'silverstripe/silverstripe-reports',
-  'silverstripe-themes/silverstripe-simple',
-  'silverstripe/silverstripe-siteconfig',
-  'silverstripe/silverstripe-versioned',
-  'silverstripe/silverstripe-versioned-admin'
-];
+async function rebuildReposList() {
+  // Initialise this with repos that aren't in the supported-modules json
+  // Or which will otherwise be filtered out due to their type
+  const extraRepos = [
+    // GitHub actions
+    'silverstripe/gha-action-ci',
+    'silverstripe/gha-auto-tag',
+    'silverstripe/gha-ci',
+    'silverstripe/gha-dispatch-ci',
+    'silverstripe/gha-gauge-release',
+    'silverstripe/gha-generate-matrix',
+    'silverstripe/gha-issue',
+    'silverstripe/gha-keepalive',
+    'silverstripe/gha-merge-up',
+    'silverstripe/gha-pull-request',
+    'silverstripe/gha-run-tests',
+    'silverstripe/gha-tag-release',
+    'silverstripe/gha-trigger-ci',
+    'silverstripe/gha-update-js',
+    // tooling
+    'silverstripe/cow',
+    'silverstripe/rhino',
+    'silverstripe/github-issue-search-client',
+    'silverstripe/module-standardiser',
+    'silverstripe/silverstripe-tx-translator',
+    // extra bits and bobs
+    'silverstripe/.github',
+    'silverstripe/eslint-config',
+    'silverstripe/webpack-config',
+    'silverstripe/silverstripe-module',
+    'silverstripe/api.silverstripe.org',
+    'silverstripe/doc.silverstripe.org',
+    'silverstripe/silverstripe-userhelp-content',
+    'silverstripe/demo.silverstripe.org',
+    'silverstripe/silverstripe-frameworktest',
+  ];
 
-// Modules which are maintained by the product team focused at 'core'.
-// This is an internal workflow aspect which allows this team to use this app
-// for their issue triage. It should match the zenhub.com board,
-// minus repos on github.com/silverstripe-security.
-const coreProductTeamRepos = [
-  'silverstripe/api.silverstripe.org',
-  'silverstripe/cow',
-  'silverstripe/demo.silverstripe.org',
-  'silverstripeltd/open-sourcerers',
-  'silverstripe/recipe-cms',
-  'silverstripe/recipe-core',
-  'silverstripe/recipe-plugin',
-  'silverstripe/silverstripe-admin',
-  'silverstripe/silverstripe-asset-admin',
-  'silverstripe/silverstripe-assets',
-  'silverstripe/silverstripe-behat-extension',
-  'silverstripe/silverstripe-campaign-admin',
-  'silverstripe/silverstripe-cms',
-  'silverstripe/silverstripe-config',
-  'silverstripe/silverstripe-errorpage',
-  'silverstripe/silverstripe-framework',
-  'silverstripe/silverstripe-frameworktest',
-  'silverstripe/silverstripe-graphql',
-  'silverstripe/silverstripe-graphql-devtools',
-  'silverstripe/silverstripe-installer',
-  'silverstripe/silverstripe-postgresql',
-  'silverstripe/silverstripe-reports',
-  'silverstripe/silverstripe-serve',
-  'silverstripe-themes/silverstripe-simple',
-  'silverstripe/silverstripe-siteconfig',
-  'silverstripe/silverstripe-sqlite3',
-  'silverstripe/silverstripe-testsession',
-  'silverstripe/silverstripe-upgrader',
-  'silverstripe/silverstripe-versioned',
-  'silverstripe/silverstripe-versioned-admin',
-  'silverstripe/vendor-plugin',
-  'silverstripe/webpack-config',
-  'silverstripe/developer-docs'
-];
+  const allModules = {};
+  for (const repo of extraRepos) {
+    allModules[repo] = { github: repo };
+  }
 
-fetch(URL).then((response) => {
-  response.json().then((modules) => {
-  const repos = modules.filter(module => module.type === 'supported-module').map(module => module.github);
+  // Merge in suported modules from all relevant major release lines.
+  // For modules which appear in more than one release line, prefer the most recent version.
+  const urls = [
+    'https://raw.githubusercontent.com/silverstripe/supported-modules/4/modules.json',
+    'https://raw.githubusercontent.com/silverstripe/supported-modules/5/modules.json',
+  ];
+  for (const url of urls) {
+    await getRelevantModules(url, allModules);
+  }
+
   const out = [
     {
       id: 'core',
       name: 'Core',
-      repos: repos.filter(repo => coreRepos.indexOf(repo) > -1)
+      repos: Object.values(allModules).filter(module => module.isCore).map(module => module.github)
     },
     {
       id: 'supported',
       name: 'Supported',
       // All supported modules including core
-      repos: repos.filter(repo => !coreRepos.indexOf(repo) > -1)
-    },
-    {
-      id: 'core-product-team',
-      name: 'Core Product Team',
-      repos: repos.filter(repo => coreProductTeamRepos.indexOf(repo) > -1)
-    },
-    {
-      id: 'supported-product-team',
-      name: 'Supported Modules Product Team',
-      // Only supported modules which aren't "core product repos" already
-      repos: repos.filter(repo => coreProductTeamRepos.indexOf(repo) === -1)
+      repos: Object.values(allModules).map(module => module.github)
     }
   ];
 
@@ -102,5 +89,6 @@ fetch(URL).then((response) => {
     }
     console.log('Successfully written to file "src/repos.json"');
   });
-  });
-});
+}
+
+rebuildReposList();
