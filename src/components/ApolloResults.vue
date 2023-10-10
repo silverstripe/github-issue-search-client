@@ -62,9 +62,9 @@ export default defineComponent({
       const queryModes = {
         ux: 'label:type/ux',
         rfc: 'RFC', // search term
-        easy: 'label:effort/easy',
+        easy: 'label:complexity/low',
         bugs: 'label:type/bug',
-        untriaged: 'is:open is:issue -label:Epic -label:type/docs -label:type/ux -label:type/bug -label:type/enhancement -label:effort/easy -label:effort/medium -label:effort/hard -label:impact/critical -label:impact/high -label:impact/medium -label:impact/low -label:rfc/draft -label:rfc/accepted -label:feedback-required/author',
+        untriaged: 'is:open is:issue no:label',
       };
 
       return this.formData.mode ? queryModes[this.formData.mode] : '';
