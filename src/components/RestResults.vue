@@ -81,14 +81,11 @@ export default defineComponent({
         console.error('Repository groups were not defined!');
       }
 
-      // See README for "product team mode" explaination.
-      // Note that core issues are filtered out from supportedGroups in product team mode,
-      // in order to avoid cross-team noise in issue workflows.
-      const coreGroups = this.formData.productTeamMode ? ['core-product-team'] : ['core'];
-      const supportedGroups = this.formData.productTeamMode ? ['supported-product-team'] : ['core', 'supported'];
-
       // TODO Pass this through main.js as props
-      const ids = this.formData.includeSupported ? supportedGroups : coreGroups;
+      const ids = ['core'];
+      if (this.formData.includeSupported) {
+        ids.push('supported');
+      }
 
       const repos = this.formData.customRepos.length ?
         // Pass in custom list of repos through the URL.
@@ -110,14 +107,11 @@ export default defineComponent({
         console.error('Repository groups were not defined!');
       }
 
-      // See README for "product team mode" explaination.
-      // Note that core issues are filtered out from supportedGroups in product team mode,
-      // in order to avoid cross-team noise in issue workflows.
-      const coreGroups = this.formData.productTeamMode ? ['core-product-team'] : ['core'];
-      const supportedGroups = this.formData.productTeamMode ? ['supported-product-team'] : ['core', 'supported'];
-
       // TODO Pass this through main.js as props
-      const ids = this.formData.includeSupported ? supportedGroups : coreGroups;
+      const ids = ['core'];
+      if (this.formData.includeSupported) {
+        ids.push('supported');
+      }
 
       const repos = this.formData.customRepos.length ?
         // Pass in custom list of repos through the URL.
