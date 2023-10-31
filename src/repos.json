@@ -49,6 +49,7 @@
       "silverstripe/github-issue-search-client",
       "silverstripe/module-standardiser",
       "silverstripe/silverstripe-tx-translator",
+      "silverstripe/markdown-php-codesniffer",
       "silverstripe/.github",
       "silverstripe/eslint-config",
       "silverstripe/webpack-config",
