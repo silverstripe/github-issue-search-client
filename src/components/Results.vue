@@ -1,7 +1,7 @@
 <template>
   <div :class="{ dark: isDark }">
     <!-- Loading -->
-    <div v-if="loading" class="btn loading apollo">
+    <div v-if="loading && !loadingNextPage" class="btn loading apollo">
       <vue-loaders name="ball-beat" color="#0071C4"></vue-loaders>
     </div>
 
@@ -22,7 +22,7 @@
       <div class="results__footer">
         <p class="results__count">Showing {{results.length}} of {{totalCount}}</p>
         <button v-if="hasMore" class="btn" v-bind:disabled="loading" @click="handleMoreResults">
-          <template v-if="!loading">Show More</template>
+          <template v-if="!loadingNextPage">Show More</template>
           <template v-else>Loading More</template>
         </button>
       </div>
@@ -46,6 +46,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   props: {
     loading: Boolean,
+    loadingNextPage: Boolean,
     results: {
       type: Array,
       required: true
