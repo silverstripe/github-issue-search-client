@@ -85,7 +85,7 @@ export default defineComponent({
         ids.push('supported');
       }
 
-      const repos = this.formData.customRepos.length ?
+      let repos = this.formData.customRepos.length ?
         // Pass in custom list of repos through the URL.
         // This allows repos which aren't in any repo group, so could technically  be used
         // for topics other than Silverstripe modules.
@@ -94,6 +94,13 @@ export default defineComponent({
         this.repoGroups
           .filter(repoGroup => ids.includes(repoGroup.id))
           .reduce<string[]>((repos, repoGroup) => repos.concat(repoGroup.repos), []);
+
+      // We don't have the necessary permissions to add labels to this repo, so we shouldn't
+      // include it in the untriaged view.
+      if (this.formData.mode === 'untriaged') {
+        repos = repos.filter((repo) => repo !== 'tractorcow-farm/silverstripe-fluent');
+      }
+
       const uniqueRepos = [...new Set(repos)]; // filter out duplicates
 
       return uniqueRepos.map(repo => `repo:${repo}`).join(' ');
