@@ -1,6 +1,7 @@
 <template>
   <Results
     v-bind:loading="$apollo.loading"
+    v-bind:loadingNextPage="loadingNextPage"
     v-bind:results="allResults.edges || []"
     v-bind:error="error"
     v-bind:totalCount="totalCount"
@@ -25,6 +26,7 @@ import repoGroups from '../repos.json';
 
 type Data = {
   loading: boolean,
+  loadingNextPage: boolean,
   totalCount: number,
   allResults: SearchResultItemConnection,
   error: Error | undefined,
@@ -45,6 +47,7 @@ export default defineComponent({
   data() {
     return {
       loading: false,
+      loadingNextPage: false,
       totalCount: 0,
       allResults: {},
       error: undefined,
@@ -148,8 +151,9 @@ export default defineComponent({
   },
 
   methods: {
-    getMoreResults() {
-      this.$apollo.queries.allResults.fetchMore({
+    async getMoreResults() {
+      this.loadingNextPage = true;
+      await this.$apollo.queries.allResults.fetchMore({
         variables: {
           query: this.compositeQuery,
           pageCursor: this.allResults.pageInfo['endCursor'],
@@ -165,7 +169,8 @@ export default defineComponent({
           };
           return search;
         }
-      })
+      });
+      this.loadingNextPage = false;
     },
   },
 
