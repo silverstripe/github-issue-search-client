@@ -14,6 +14,7 @@ export type FormData = {
   mode: Mode,
   customRepos: string[],
   includeSupported: boolean,
+  communityOnly: boolean,
   issueStatus: IssueStatus,
   issueType: IssueType,
   sort: Sort,
