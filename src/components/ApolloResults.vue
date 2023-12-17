@@ -23,6 +23,7 @@ import Issue from "./Issue.vue";
 import SearchQuery from "../graphql/Search.js";
 import { FormData, RepoGroups } from "../types";
 import repoGroups from '../repos.json';
+import nonCommunityUsers from '../non-community-users.json';
 
 type Data = {
   loading: boolean,
@@ -31,6 +32,7 @@ type Data = {
   allResults: SearchResultItemConnection,
   error: Error | undefined,
   repoGroups: RepoGroups,
+  nonCommunityUsers: Array<string>,
 };
 
 export default defineComponent({
@@ -52,6 +54,7 @@ export default defineComponent({
       allResults: {},
       error: undefined,
       repoGroups,
+      nonCommunityUsers,
     } as Data;
   },
 
@@ -141,6 +144,13 @@ export default defineComponent({
       return queryParts[this.formData.issueType] || queryParts.issue;
     },
 
+    authorQuery() {
+      if (!this.formData.communityOnly) {
+        return '';
+      }
+      return this.nonCommunityUsers.map(user => `-author:${user}`).join(' ');
+    },
+
     compositeQuery(): string {
       return [
         this.formData.query,
@@ -148,7 +158,8 @@ export default defineComponent({
         this.statusQuery,
         this.typeQuery,
         this.repoQuery,
-        this.sortQuery
+        this.sortQuery,
+        this.authorQuery,
       ].join(' ');
     },
 

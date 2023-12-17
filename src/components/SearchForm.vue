@@ -20,6 +20,13 @@
           </span>
         </label>
 
+        <label class="option-filter">
+          <input type="checkbox" id="community-only" v-model="data.communityOnly" @change="doSearch()" />
+          <span>
+            Community contributions only
+          </span>
+        </label>
+
         <select id="issue-type" v-model="data.issueType" aria-label="Issue Type" class="option-filter" @change="handleIssueType">
           <option value="issue">Issues</option>
           <option value="pr">Pull requests</option>
