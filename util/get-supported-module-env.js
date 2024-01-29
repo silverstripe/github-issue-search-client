@@ -43,6 +43,7 @@ async function rebuildReposList() {
     'silverstripe/module-standardiser',
     'silverstripe/silverstripe-tx-translator',
     'silverstripe/markdown-php-codesniffer',
+    'silverstripe/silverstripe-standards',
     // extra bits and bobs
     'silverstripe/.github',
     'silverstripe/eslint-config',
