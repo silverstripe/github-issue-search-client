@@ -13,10 +13,16 @@
         <span class="option-filter" v-if="data.customRepos.length">
           Filtering by {{data.customRepos.length}} repos
         </span>
-        <label class="option-filter" v-else>
+        <label class="option-filter" v-if="!data.customRepos.length">
           <input type="checkbox" id="supported-modules" v-model="data.includeSupported" @change="doSearch()" />
           <span>
-            Include <a href="https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/" target="_blank" rel="noopener">supported modules</a>
+            Include <a href="https://docs.silverstripe.org/en/project_governance/supported_modules/" target="_blank" rel="noopener">supported modules</a>
+          </span>
+        </label>
+        <label class="option-filter" v-if="!data.customRepos.length">
+          <input type="checkbox" id="other-repos" v-model="data.includeOther" @change="doSearch()" />
+          <span>
+            Include maintenance repos
           </span>
         </label>
 
