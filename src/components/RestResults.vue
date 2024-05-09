@@ -86,6 +86,9 @@ export default defineComponent({
       if (this.formData.includeSupported) {
         ids.push('supported');
       }
+      if (this.formData.includeOther) {
+        ids.push('other');
+      }
 
       const repos = this.formData.customRepos.length ?
         // Pass in custom list of repos through the URL.
@@ -111,6 +114,9 @@ export default defineComponent({
       const ids = ['core'];
       if (this.formData.includeSupported) {
         ids.push('supported');
+      }
+      if (this.formData.includeOther) {
+        ids.push('other');
       }
 
       const repos = this.formData.customRepos.length ?

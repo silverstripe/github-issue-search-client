@@ -87,6 +87,9 @@ export default defineComponent({
       if (this.formData.includeSupported) {
         ids.push('supported');
       }
+      if (this.formData.includeOther) {
+        ids.push('other');
+      }
 
       let repos = this.formData.customRepos.length ?
         // Pass in custom list of repos through the URL.

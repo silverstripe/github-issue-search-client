@@ -4,7 +4,8 @@
 
 This app uses the Github issue search API to provide
 a convenient issue browser across all of our
-[supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/).
+[supported modules](https://docs.silverstripe.org/en/project_governance/supported_modules/)
+as well as other repositories that are important for maintenance.
 
 It uses [vue-cli](https://github.com/vuejs/vue-cli/blob/dev/docs/cli.md)
 to simplify local development and production builds for VueJS.
@@ -15,6 +16,7 @@ You can use it on https://github-issue-search-client-silverstripe.vercel.app.
 This project is powered by [Vercel](https://vercel.com/?utm_source=silverstripe&utm_campaign=oss).
 
 ![Vercel logo](_img/vercel-logotype-dark.png)
+
 ## Install
 
 Use Node v8 or higher.
@@ -39,10 +41,10 @@ Note that the token should NOT have any other permissions/scopes, since it will 
 in the client bundle (and is readable by everyone through network requests).
 The only reason to include it here is avoiding to hit Github's rate limits without it.
 
-In order to get an updated list of our [supported modules](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/),
+In order to get an updated list of the repositories we care about,
 you can run the following command. This will be written to the `repos.json` file in the `src` folder, which can be
-updated (in VCS) periodically if required. This will also happen during a deployment and auto-update in the
-Now environment.
+updated (in VCS) periodically if required.
+This gets run during a deployment and auto-update in the Vercel environment.
 
 ```bash
 npm run get-repos
