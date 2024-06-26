@@ -8,5 +8,6 @@ module.exports = {
     apollo: {
       lintGQL: false
     }
-  }
+  },
+  publicPath: "./"
 }

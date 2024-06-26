@@ -9,23 +9,17 @@ as well as other repositories that are important for maintenance.
 
 It uses [vue-cli](https://github.com/vuejs/vue-cli/blob/dev/docs/cli.md)
 to simplify local development and production builds for VueJS.
-You can use it on https://github-issue-search-client-silverstripe.vercel.app.
+You can use it on <https://silverstripe.github.io/github-issue-search-client/>.
 
 ![Preview](_img/preview.png)
 
-This project is powered by [Vercel](https://vercel.com/?utm_source=silverstripe&utm_campaign=oss).
-
-![Vercel logo](_img/vercel-logotype-dark.png)
-
 ## Install
 
-Use Node v8 or higher.
+Use Node (see .nvmrc for correct version to use).
 
 ```bash
 npm install
 ```
-
-For deployment, you will need to [install Vercel](https://vercel.com/download/?utm_source=silverstripe&utm_campaign=oss) and log in.
 
 ## Configure
 
@@ -44,7 +38,8 @@ The only reason to include it here is avoiding to hit Github's rate limits witho
 In order to get an updated list of the repositories we care about,
 you can run the following command. This will be written to the `repos.json` file in the `src` folder, which can be
 updated (in VCS) periodically if required.
-This gets run during a deployment and auto-update in the Vercel environment.
+
+This gets run during a deployment.
 
 ```bash
 npm run get-repos
@@ -66,38 +61,16 @@ npm run build
 
 ### Continuous deployment
 
-The project is published to [Vercel](https://vercel.com/?utm_source=silverstripe&utm_campaign=oss) automatically when changes are merged into the master branch.
-This is done via an automatic GitHub integration.
+The project is published to [GitHub Pages](https://docs.github.com/en/pages) automatically when changes are merged into the master branch.
+This is done via a GitHub Actions workflow.
 
 ### Manual deployment
 
-You can also deploy projects manually. To do this you will need to have the [Vercel CLI](https://vercel.com/cli/?utm_source=silverstripe&utm_campaign=oss) installed, be
-logged in, part of the ["silverstripe" Vercel team](https://vercel.com/teams/silverstripe/settings/members/?utm_source=silverstripe&utm_campaign=oss), 
-and have the team configured in your profile. For access to the team, contact Ingo or Garion.
-
-```bash
-# Login if necessary
-vercel login
-
-# Switch to SilverStripe Ltd team
-vercel teams switch silverstripe
-
-# Ship it!
-vercel
-```
-
-It will give you an updated URL to run in your browser. This will also run automatically as a Git hook.
+You can also deploy projects manually. To do this go to the [Actions tab in GitHub](https://github.com/silverstripe/github-issue-search-client/actions/workflows/deploy-gh-pages.yml), and click "Run workflow".
 
 ### API keys
 
-To store the GraphQL API token in an environment variable for Now, you need to use the CLI to save is as a
-[secret](https://zeit.co/docs/v2/deployments/environment-variables-and-secrets/?utm_source=silverstripe&utm_campaign=oss#securing-environment-variables-using-secrets):
-
-```bash
-vercel secret add graphql-api-key YOURAPITOKENHERE
-```
-
-The secret variable name `@graphql-api-key` is referenced from `now.json` to map to an environment variable.
+There is a historic token stored in the repository as a secret. If you ever need to cycle the token, just update the value of the secret in this repository and redeploy.
 
 ## Usage
 
