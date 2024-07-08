@@ -9,7 +9,7 @@ as well as other repositories that are important for maintenance.
 
 It uses [vue-cli](https://github.com/vuejs/vue-cli/blob/dev/docs/cli.md)
 to simplify local development and production builds for VueJS.
-You can use it on <https://silverstripe.github.io/github-issue-search-client/>.
+You can use it on <https://elvis.silverstripe.org>.
 
 ![Preview](_img/preview.png)
 
