@@ -4,6 +4,16 @@ const path = require('path');
 // See https://stackoverflow.com/a/75281896/10936596
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
+function isRelevantRepo(repo) {
+  const relevantMappings = ['*', '5', '6'];
+  for (const mapping of relevantMappings) {
+    if (repo.majorVersionMapping.hasOwnProperty(mapping)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 async function rebuildReposList() {
   const coreModules = [];
   const supportedModules = [];
@@ -15,6 +25,9 @@ async function rebuildReposList() {
   const currentModules = await response.json();
   for (const category of Object.keys(currentModules)) {
     for (const repo of currentModules[category]) {
+      if (!isRelevantRepo(repo)) {
+        continue;
+      }
       if (category === 'supportedModules') {
         if (repo.isCore) {
           coreModules.push(repo.github);
