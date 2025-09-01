@@ -70,7 +70,7 @@ export default defineComponent({
         rfc: 'RFC', // search term
         easy: 'label:complexity/low',
         bugs: 'label:type/bug',
-        untriaged: 'is:open is:issue no:label',
+        untriaged: '(is:open AND is:issue AND no:label)',
       };
 
       return this.formData.mode ? queryModes[this.formData.mode] : '';
@@ -108,8 +108,8 @@ export default defineComponent({
       }
 
       const uniqueRepos = [...new Set(repos)]; // filter out duplicates
-
-      return uniqueRepos.map(repo => `repo:${repo}`).join(' ');
+      const queryString = uniqueRepos.map(repo => `repo:${repo}`).join(' OR ');
+      return `(${queryString})`;
     },
 
     sortQuery() {
@@ -151,7 +151,8 @@ export default defineComponent({
       if (!this.formData.communityOnly) {
         return '';
       }
-      return this.nonCommunityUsers.map(user => `-author:${user}`).join(' ');
+      const queryString = this.nonCommunityUsers.map(user => `-author:${user}`).join(' AND ');
+      return `(${queryString})`;
     },
 
     compositeQuery(): string {
@@ -163,7 +164,7 @@ export default defineComponent({
         this.repoQuery,
         this.sortQuery,
         this.authorQuery,
-      ].join(' ');
+      ].filter((item) => item !== null && item !== '').join(' AND ');
     },
 
     showShowMore() {

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export default gql`query($query:String!, $pageCursor:String) {
-  search(query:$query, type:ISSUE, first:15, after:$pageCursor) {
+  search(query:$query, type:ISSUE_ADVANCED, first:15, after:$pageCursor) {
     edges {
       node {
         ...on Issue {
