@@ -20,7 +20,7 @@ import Commit from "./Commit.vue";
 import Code from "./Code.vue";
 import repoGroups from '../repos.json';
 import { Octokit } from "@octokit/rest";
-import {
+import type {
   GetResponseDataTypeFromEndpointMethod,
 } from "@octokit/types";
 import debounce from "lodash.debounce";
