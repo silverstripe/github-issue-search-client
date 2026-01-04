@@ -2,7 +2,7 @@
   <div id="app">
     <div class="container">
       <div class="logo">
-        <img src="logo.png" class="logo--img" alt="Elvis Bug Tracker" />
+        <img src="/logo.png" class="logo--img" alt="Elvis Bug Tracker" />
       </div>
       <DarkModeToggle/>
       <SearchResults/>

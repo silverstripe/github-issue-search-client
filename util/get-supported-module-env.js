@@ -7,7 +7,7 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 function isRelevantRepo(repo) {
   const relevantMappings = ['*', '5', '6'];
   for (const mapping of relevantMappings) {
-    if (repo.majorVersionMapping.hasOwnProperty(mapping)) {
+    if (Object.prototype.hasOwnProperty.call(repo.majorVersionMapping, mapping)) {
       return true;
     }
   }

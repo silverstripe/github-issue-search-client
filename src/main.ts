@@ -6,7 +6,7 @@ import { setContext } from '@apollo/client/link/context';
 import VueLoaders from 'vue-loaders';
 
 const authLink = setContext((_, { headers }) => {
-  const token = process.env.VUE_APP_GRAPHQL_TOKEN;
+  const token = import.meta.env.VUE_APP_GRAPHQL_TOKEN;
   return {
     headers: {
       ...headers,
@@ -16,7 +16,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: process.env.VUE_APP_GRAPHQL_ENDPOINT || 'http://localhost:4000/graphql'
+  uri: import.meta.env.VUE_APP_GRAPHQL_ENDPOINT || 'http://localhost:4000/graphql'
 })
 
 // Create the apollo client
@@ -25,7 +25,7 @@ const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
   connectToDevTools: true,
   headers: {
-    authorization: 'Bearer ' + process.env.VUE_APP_GRAPHQL_TOKEN,
+    authorization: 'Bearer ' + import.meta.env.VUE_APP_GRAPHQL_TOKEN,
     'custom': 'bla32432511532'
   }
 })
