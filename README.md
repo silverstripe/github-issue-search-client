@@ -45,6 +45,9 @@ This gets run during a deployment.
 npm run get-repos
 ```
 
+Repositories which are only supported in CMS major versions that are in partial (security only) support are not included.
+This uses the support timeline from the [Silverstripe CMS roadmap data](https://github.com/silverstripe/roadmap/blob/main/data.json).
+
 ## Run locally
 
 ```bash
